@@ -1,0 +1,67 @@
+﻿@model List<Webovka.Models.OrderItem>
+@{
+    ViewData["Title"] = "Nákupní košík";
+}
+
+<section class="products">
+    <div class="container">
+        <h2 class="section-title">Váš nákupní <span>košík</span></h2>
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div style="text-align: center; padding: 50px;">
+                <p>Váš košík je zatím prázdný.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn-red">Jít nakupovat</a>
+            </div>
+        }
+        else
+        {
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Produkt</th>
+                        <th class="text-center">Množství</th>
+                        <th class="text-right">Cena</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="cart-row">
+                            <td class="cart-cell">
+                                <div class="cart-product-info">
+                                    <img src="@item.ProductVariant.Product.MainImageUrl" class="cart-img" alt="@item.ProductVariant.Product.Name">
+                                    <div>
+                                        <strong>@item.ProductVariant.Product.Name</strong>
+                                        <span class="cart-variant-info">
+                                            Velikost: @item.ProductVariant.Size, Barva: @item.ProductVariant.Color
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cart-cell text-center">
+                                <input type="number" value="@item.Quantity" min="1" class="cart-qty-input">
+                            </td>
+                            <td class="cart-cell text-right">
+                                <span class="cart-price">
+                                    @(item.UnitPrice* item.Quantity) Kč
+                                </span>
+                            </td>
+                            <td class="cart-cell text-center">
+                                <a href="#" class="cart-delete-btn" title="Odstranit">✕</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <p class="cart-total-text">
+                    Celkem: <span class="cart-total-price">@Model.Sum(x => x.UnitPrice * x.Quantity) Kč</span>
+                </p>
+                <button class="btn-red">Pokračovat v objednávce</button>
+            </div>
+        }
+    </div>
+</section>

@@ -6,29 +6,52 @@
     <title>Boty</title>
     <link rel="stylesheet" href="~/css/HOME_style.css">
     <link rel="stylesheet" href="~/css/PRODUCT_style.css">
-    <link rel="stylesheet" href="~/css/DEMAND_style.css">
+    <link rel="stylesheet" href="~/css/CART_style.css">
 </head>
 <body>
-    <header class="top-bar">
-        <div class="container">
-            <div class="contact-left">
-                <a href="#">
-                    <img src="~/images/materialy/img/8.png" class="icon-inline" alt="Telefon">
-                    <span>+420 777 666 555</span>
-                </a>
-                <span class="divider">|</span>
-                <a href="#">
-                    <span>info@nejlepsiboty.cz</span>
-                </a>
-            </div>
-            <div class="login-right">
-                <a href="#">
-                    <img src="~/images/materialy/img/profile-user.png" class="icon-inline" alt="Login">
-                    <span>Přihlásit se</span>
-                </a>
+    <header>
+        <div class="top-bar">
+            <div class="container">
+                <div class="contact-left">
+                    <a href="#">
+                        <img src="~/images/materialy/img/8.png" class="icon-inline" alt="Telefon">
+                        <span>+420 777 666 555</span>
+                    </a>
+                    <span class="divider">|</span>
+                    <a href="#">
+                        <span>info@nejlepsiboty.cz</span>
+                    </a>
+                </div>
+                <div class="login-right">
+                    <a href="#">
+                        <img src="~/images/materialy/img/profile-user.png" class="icon-inline" alt="Login">
+                        <span>Přihlásit se</span>
+                    </a>
+                </div>
             </div>
         </div>
-    </header>
+
+        <div class="header-main">
+            <div class="container header-wrapper">
+                <div class="logo">
+                    <a href="#"><img src="~/images/materialy/img/Group 4.png" alt="Boty Logo" width="120"></a>
+                </div>
+                <div class="header-right-group">
+                    <form class="search-bar" action="#">
+                        <button type="submit">
+                            <img src="~/images/materialy/img/loupe.png" alt="Hledat">
+                        </button>
+                        <input type="text" placeholder="Vyhledat zboží...">
+                    </form>
+                    <div class="header-icons">
+                        <a href="#"><img src="~/images/materialy/img/kosik.png" width="24"></a>
+                        <a href="#"><img src="~/images/materialy/img/heart.png" width="24"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <header/>
+
 
     <main>
         @RenderBody()

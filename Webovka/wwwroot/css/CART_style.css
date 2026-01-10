@@ -1,0 +1,96 @@
+/* wwwroot/css/cart.css */
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+    .cart-table thead tr {
+        border-bottom: 2px solid #eee;
+        color: #2c3e50;
+    }
+
+    .cart-table th {
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+    }
+
+        .cart-table th.text-center {
+            text-align: center;
+        }
+
+        .cart-table th.text-right {
+            text-align: right;
+        }
+
+.cart-row {
+    border-bottom: 1px solid #eee;
+}
+
+.cart-cell {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.cart-product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-img {
+    width: 60px;
+    height: auto;
+    object-fit: cover;
+}
+
+.cart-variant-info {
+    font-size: 0.85rem;
+    color: #777;
+    display: block;
+    margin-top: 4px;
+}
+
+.cart-qty-input {
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.cart-price {
+    font-weight: bold;
+    color: #d93025;
+}
+
+.cart-delete-btn {
+    color: #999;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+    .cart-delete-btn:hover {
+        color: #d93025;
+    }
+
+.cart-summary {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.cart-total-text {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.cart-total-price {
+    color: #2c3e50;
+    font-weight: bold;
+}
