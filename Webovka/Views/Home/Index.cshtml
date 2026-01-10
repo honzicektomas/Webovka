@@ -1,4 +1,7 @@
-﻿
+﻿@model List<Webovka.Models.Product>
+@{
+    ViewData["Title"] = "Domů";
+}
 <div class="header-main">
     <div class="container header-wrapper">
         <div class="logo">
@@ -88,79 +91,40 @@
     </div>
 </div>
 
+
 <section class="products">
     <div class="container">
         <h2 class="section-title">Nejnovější kousky <span>v naší nabídce</span></h2>
+        
         <div class="product-grid">
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/papucky-hnede1.png"></div>
-                <h4>Papučky barefoot hnědé kožené</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
+            @foreach (var bota in Model)
+            {
+                <div class="product-card">
+                    <div class="product-img-wrap">
+                        <a href="#">
+                            <img src="@bota.MainImageUrl" alt="@bota.Name">
+                        </a>
+                    </div>
+                    
+                    <h4>@bota.Name</h4>
+                    
+                    <div class="card-bottom">
+                        <div>
+                            <span class="current-price">@bota.Price Kč</span> 
+                            @if(bota.OldPrice != null)
+                            {
+                                <span class="old-price">@bota.OldPrice Kč</span>
+                            }
+                        </div>
+                        <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
+                    </div>
                 </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/papucky-ruzove1.png"></div>
-                <h4>Papučky barefoot růžové</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/sandalky-modre.png"></div>
-                <h4>Sandálky modré umělé</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/boty-se-spickou.png"></div>
-                <h4>Netlačící boty s vysokou špičkou</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/papucky-hnede1.png"></div>
-                <h4>Papučky barefoot hnědé kožené</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/papucky-hnede1.png"></div>
-                <h4>Papučky barefoot hnědé kožené</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/sandalky-modre.png"></div>
-                <h4>Sandálky modré umělé</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/boty-se-spickou.png"></div>
-                <h4>Netlačící boty s vysokou špičkou</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
+            }
         </div>
+        
         <button class="btn-red">zobrazit celou nabídku</button>
     </div>
 </section>
-
 <div class="container">
     <div class="section-separator">
         <div class="separator-line"></div>

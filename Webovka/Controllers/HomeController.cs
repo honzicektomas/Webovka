@@ -1,27 +1,29 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Webovka.Models;
+using System.Linq;
 
 namespace Webovka.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private MyContext context;
+
+        // Dependency Injection - systém nám sem pošle pøipojenou databázi
+        public HomeController()
         {
-            return View();
+            context = new MyContext();
         }
 
+        public IActionResult Index()
+        {
+            // Naèteme všechny produkty z databáze
+            // .Include(p => p.Category) - abychom mohli vypsat i název kategorie, kdybychom chtìli
+            var produkty = context.Products
+                                   .Include(p => p.Category)
+                                   .ToList();
 
-
-        //public IActionResult Privacy()
-        //{
-        //    return View();
-        //}
-
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
+            return View(produkty);
+        }
     }
 }
