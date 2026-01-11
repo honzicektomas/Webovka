@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Přihlášení / Registrace";
+}
+
+<section class="products" style="padding-top: 50px; padding-bottom: 80px;">
+    <div class="container">
+        <h2 class="section-title">Vstup do <span>účtu</span></h2>
+
+        <div class="auth-container">
+
+            <div class="auth-box auth-box-login">
+                <h3 class="auth-title">Již mám účet</h3>
+
+                @if (ViewBag.LoginError != null)
+                {
+                    <p class="error-msg">@ViewBag.LoginError</p>
+                }
+
+                <form asp-action="Login" method="post">
+                    <div class="form-group">
+                        <label class="form-label">Email:</label>
+                        <input type="email" name="email" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Heslo:</label>
+                        <input type="password" name="password" required class="form-input">
+                    </div>
+                    <button type="submit" class="btn-red btn-full">PŘIHLÁSIT SE</button>
+                </form>
+            </div>
+
+            <div class="auth-box auth-box-register">
+                <h3 class="auth-title">Nová registrace</h3>
+
+                @if (ViewBag.RegisterError != null)
+                {
+                    <p class="error-msg">@ViewBag.RegisterError</p>
+                }
+
+                <form asp-action="Register" method="post">
+                    <div class="form-row">
+                        <div class="form-half form-group">
+                            <label class="form-label">Jméno *</label>
+                            <input name="FirstName" required class="form-input">
+                        </div>
+                        <div class="form-half form-group">
+                            <label class="form-label">Příjmení *</label>
+                            <input name="LastName" required class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input name="Email" type="email" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Telefon *</label>
+                        <input name="PhoneNumber" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Adresa *</label>
+                        <input name="Address" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Heslo *</label>
+                        <input name="PasswordHash" type="password" required class="form-input">
+                    </div>
+
+                    <button type="submit" class="btn-red btn-full">VYTVOŘIT ÚČET</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>

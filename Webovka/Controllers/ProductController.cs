@@ -2,7 +2,7 @@
 
 namespace Webovka.Controllers
 {
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         public IActionResult Index()
         {

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Webovka.Controllers
 {
-    public class CartController : Controller
+    public class CartController : BaseController
     {
         public IActionResult Index()
         {

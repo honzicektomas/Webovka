@@ -1,0 +1,45 @@
+﻿@model List<Webovka.Models.Product>
+@{
+    ViewData["Title"] = "Administrace";
+}
+
+<div class="container" style="padding-top: 50px; padding-bottom: 50px;">
+    <div class="admin-header">
+        <h1>Administrace E-shopu</h1>
+        <a asp-action="Create" class="btn-red" style="text-decoration:none;">+ Přidat nový produkt</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Foto</th>
+                <th>Název</th>
+                <th>Cena</th>
+                <th>Kategorie</th>
+                <th style="text-align: right;">Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>
+                        <img src="@item.MainImageUrl" class="admin-img-thumb" alt="Foto">
+                    </td>
+                    <td><strong>@item.Name</strong></td>
+                    <td style="color: #d93025; font-weight:bold;">@item.Price Kč</td>
+                    <td>@(item.Category?.Name ?? "-")</td>
+                    <td style="text-align: right;">
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           onclick="return confirm('Opravdu smazat?')"
+                           class="action-link action-delete">SMAZAT</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-controller="Home" asp-action="Index" class="action-link">← Zpět na web</a>
+</div>

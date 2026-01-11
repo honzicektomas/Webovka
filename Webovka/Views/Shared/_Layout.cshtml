@@ -1,12 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boty</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Webovka</title>
+
     <link rel="stylesheet" href="~/css/HOME_style.css">
     <link rel="stylesheet" href="~/css/PRODUCT_style.css">
     <link rel="stylesheet" href="~/css/CART_style.css">
+    <link rel="stylesheet" href="~/css/LOGIN_style.css">
+    <link rel="stylesheet" href="~/css/ADMIN_style.css">
 </head>
 <body>
     <header>
@@ -23,10 +26,30 @@
                     </a>
                 </div>
                 <div class="login-right">
-                    <a href="#">
-                        <img src="~/images/materialy/img/profile-user.png" class="icon-inline" alt="Login">
-                        <span>Přihlásit se</span>
-                    </a>
+                    @if (ViewBag.IsAuthenticated == true)
+                    {
+                        <span style="margin-right: 15px; font-weight: bold; color: #2c3e50;">
+                            @ViewBag.CurrentUserName
+                        </span>
+
+                        @if (ViewBag.CurrentUserRole == "Admin")
+                        {
+                            <a asp-controller="Admin" asp-action="Index" style="color: red; margin-right: 10px; font-weight: bold;">
+                                ADMIN
+                            </a>
+                        }
+
+                        <a asp-controller="User" asp-action="Logout">
+                            <span style="text-decoration: underline;">Odhlásit</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="User" asp-action="Index">
+                            <img src="~/images/materialy/img/profile-user.png" class="icon-inline" alt="Login">
+                            <span>Přihlásit</span>
+                        </a>
+                    }
                 </div>
             </div>
         </div>
@@ -34,7 +57,9 @@
         <div class="header-main">
             <div class="container header-wrapper">
                 <div class="logo">
-                    <a href="#"><img src="~/images/materialy/img/Group 4.png" alt="Boty Logo" width="120"></a>
+                    <a asp-controller="Home" asp-action="Index">
+                        <img src="~/images/materialy/img/Group 4.png" alt="Boty Logo" width="120">
+                    </a>
                 </div>
                 <div class="header-right-group">
                     <form class="search-bar" action="#">
@@ -44,26 +69,28 @@
                         <input type="text" placeholder="Vyhledat zboží...">
                     </form>
                     <div class="header-icons">
-                        <a href="#"><img src="~/images/materialy/img/kosik.png" width="24"></a>
-                        <a href="#"><img src="~/images/materialy/img/heart.png" width="24"></a>
+                        <a asp-controller="Cart" asp-action="Index">
+                            <img src="~/images/materialy/img/kosik.png" width="24" alt="Košík">
+                        </a>
+                        <a href="#">
+                            <img src="~/images/materialy/img/heart.png" width="24" alt="Oblíbené">
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    <header/>
-
+    </header>
 
     <main>
         @RenderBody()
     </main>
-
 
     <footer class="footer-wrapper">
         <div class="container footer-container">
             <div class="footer-left">
                 <div class="footer-block">
                     <h3>O NÁS</h3>
-                    <p class="about-text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                    <p class="about-text">Lorem ipsum dolor sit amet.</p>
                     <div style="margin-top:20px;"><img src="~/images/materialy/img/Group 4.png" width="100"></div>
                 </div>
                 <div class="footer-block" style="flex:1.5; padding-left:40px;">
@@ -72,37 +99,19 @@
                         <ul>
                             <li class="list-head">Dívčí</li>
                             <li><a href="#">Tenisky</a></li>
-                            <li><a href="#">Holínky</a></li>
-                            <li><a href="#">Sandály</a></li>
                         </ul>
                         <ul>
                             <li class="list-head">Chlapecké</li>
                             <li><a href="#">Tenisky</a></li>
-                            <li><a href="#">Holínky</a></li>
-                            <li><a href="#">Sandály</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-right">
-                <h3>KONTAKTUJTE NÁS</h3>
-                <div class="contact-row">
-                    <img src="~/images/materialy/img/6.png" class="footer-icon-img" alt="Email">
-                    info@nejlepsiboty.cz
-                </div>
-                <div class="contact-row">
-                    <img src="~/images/materialy/img/8.png" class="footer-icon-img" alt="Telefon">
-                    +420 777 666 555
-                </div>
-                <div class="social-icons">
-                    <a href="#"><img src="~/images/materialy/img/facebook.png" width="20"></a>
-                    <a href="#"><img src="~/images/materialy/img/Group 153.png" width="20"></a>
-                    <a href="#"><img src="~/images/materialy/img/twitter.png" width="20"></a>
-                </div>
-                <div class="address">Litvínovská 600, Praha 9</div>
+                <h3>KONTAKT</h3>
+                <div class="contact-row">info@nejlepsiboty.cz</div>
             </div>
         </div>
     </footer>
-
 </body>
 </html>

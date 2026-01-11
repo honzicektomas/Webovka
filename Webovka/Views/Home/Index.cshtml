@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Domů";
 }
+
 <nav class="main-nav">
     <div class="container">
         <ul class="nav-menu">
@@ -23,6 +24,7 @@
         </ul>
     </div>
 </nav>
+
 
 <section class="hero">
     <div class="container">
@@ -71,40 +73,47 @@
     </div>
 </div>
 
-
 <section class="products">
     <div class="container">
         <h2 class="section-title">Nejnovější kousky <span>v naší nabídce</span></h2>
-        
+
         <div class="product-grid">
-            @foreach (var bota in Model)
+            @if (Model != null)
             {
-                <div class="product-card">
-                    <div class="product-img-wrap">
-                        <a href="#">
-                            <img src="@bota.MainImageUrl" alt="@bota.Name">
-                        </a>
-                    </div>
-                    
-                    <h4>@bota.Name</h4>
-                    
-                    <div class="card-bottom">
-                        <div>
-                            <span class="current-price">@bota.Price Kč</span> 
-                            @if(bota.OldPrice != null)
-                            {
-                                <span class="old-price">@bota.OldPrice Kč</span>
-                            }
+                @foreach (var bota in Model)
+                {
+                    <div class="product-card">
+                        <div class="product-img-wrap">
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@bota.Id">
+                                <img src="@bota.MainImageUrl" alt="@bota.Name">
+                            </a>
                         </div>
-                        <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
+
+                        <h4>
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@bota.Id" style="color: inherit; text-decoration: none;">
+                                @bota.Name
+                            </a>
+                        </h4>
+
+                        <div class="card-bottom">
+                            <div>
+                                <span class="current-price">@bota.Price Kč</span>
+                                @if (bota.OldPrice != null)
+                                {
+                                    <span class="old-price">@bota.OldPrice Kč</span>
+                                }
+                            </div>
+                            <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
+                        </div>
                     </div>
-                </div>
+                }
             }
         </div>
-        
+
         <button class="btn-red">zobrazit celou nabídku</button>
     </div>
 </section>
+
 <div class="container">
     <div class="section-separator">
         <div class="separator-line"></div>
@@ -115,28 +124,24 @@
 <section class="features">
     <div class="container">
         <div class="features-grid">
-
             <a class="feature-item">
                 <div class="feature-icon-circle">
                     <img src="~/images/materialy/img/Group 195.png" alt="Skladem">
                 </div>
                 <span>VŠE MÁME SKLADEM</span>
             </a>
-
             <a class="feature-item">
                 <div class="feature-icon-circle">
                     <img src="~/images/materialy/img/Group 196.png" alt="Doprava">
                 </div>
                 <span>DOPRAVA ZDARMA</span>
             </a>
-
             <a href="#" class="feature-item">
                 <div class="feature-icon-circle">
                     <img src="~/images/materialy/img/Group 293.png" alt="Měření">
                 </div>
                 <span>JAK MĚŘIT VELIKOSTI</span>
             </a>
-
         </div>
     </div>
 </section>

@@ -8,6 +8,12 @@ builder.Services.AddControllersWithViews();
 // I když je heslo uvnitø, musíme systému øíct: "Používej MyContext"
 builder.Services.AddDbContext<MyContext>();
 
+// NOVÉ: Pøidání podpory pro Session a HttpContext
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -16,6 +22,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 
