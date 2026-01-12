@@ -101,7 +101,7 @@ namespace Webovka.Controllers
             _context.SaveChanges();
             UpdateOrderTotal(order.Id);
 
-            return RedirectToAction("Index");
+            return Ok(new { message = "Produkt byl přidán do košíku" });
         }
 
         public IActionResult Remove(int itemId)

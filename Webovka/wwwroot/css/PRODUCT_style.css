@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     height: 100%;
     margin: 0;
 }
@@ -265,7 +265,7 @@ main {
 }
 
     .separator::after {
-        content: '?';
+        content: '♥';
         position: absolute;
         top: -10px;
         left: 50%;
@@ -327,4 +327,34 @@ main {
     .related-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+.info-price {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.current-price {
+    font-size: 1.5rem;
+    color: #d93025;
+    font-weight: bold;
+}
+
+.old-price-detail {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+
+.cart-notification {
+    margin-top: 15px;
+    padding: 12px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #c8e6c9;
 }

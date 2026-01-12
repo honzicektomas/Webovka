@@ -2,12 +2,12 @@
 @using System.Text.Json
 @{
     ViewData["Title"] = Model.Name;
-    var related = ViewBag.RelatedProducts as List<Webovka.Models.Product>;
+    var souvisejici = ViewBag.RelatedProducts as List<Webovka.Models.Product>;
 
-    var uniqueColors = Model.Variants.GroupBy(v => v.Color).Select(g => g.First()).ToList();
-    var uniqueSizes = Model.Variants.Select(v => v.Size).Distinct().OrderBy(s => s.Length).ThenBy(s => s).ToList();
+    var unikatniBarvy = Model.Variants.GroupBy(v => v.Color).Select(g => g.First()).ToList();
+    var unikatniVelikosti = Model.Variants.Select(v => v.Size).Distinct().OrderBy(s => s.Length).ThenBy(s => s).ToList();
 
-    var variantsJson = JsonSerializer.Serialize(Model.Variants.Select(v => new
+    var variantyJson = JsonSerializer.Serialize(Model.Variants.Select(v => new
     {
         id = v.Id,
         color = v.Color,
@@ -26,10 +26,10 @@
             @if (Model.Images != null && Model.Images.Any())
             {
                 <div class="gallery-thumbs">
-                    <img src="@Model.MainImageUrl" class="thumb active" onclick="switchImg(this)">
+                    <img src="@Model.MainImageUrl" class="thumb active" onclick="zmenitObrazek(this)">
                     @foreach (var img in Model.Images)
                     {
-                        <img src="@img.ImageUrl" class="thumb" onclick="switchImg(this)">
+                        <img src="@img.ImageUrl" class="thumb" onclick="zmenitObrazek(this)">
                     }
                 </div>
             }
@@ -38,21 +38,28 @@
         <div class="detail-info">
             <div class="info-cat">@(Model.Category?.Name ?? "Obuv")</div>
             <h1 class="info-title">@Model.Name</h1>
-            <div class="info-price">@Model.Price Kč</div>
+
+            <div class="info-price">
+                <span class="current-price">@Model.Price Kč</span>
+                @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+                {
+                    <span class="old-price-detail">@Model.OldPrice.Value Kč</span>
+                }
+            </div>
 
             <div class="info-desc">
-                @(Model.Description ?? "Popis produktu.")
+                @(Model.Description ?? "Popis produktu připravujeme.")
             </div>
 
             <div class="selector-row">
                 <span class="selector-label">BARVA: <span id="lblColor" class="selected-val"></span></span>
                 <div class="colors-wrap">
-                    @foreach (var c in uniqueColors)
+                    @foreach (var c in unikatniBarvy)
                     {
                         <div class="color-circle"
                              style="background-color: @(c.ColorHex ?? "#eee")"
                              title="@c.Color"
-                             onclick="selectColor('@c.Color', this)">
+                             onclick="vybratBarvu('@c.Color', this)">
                         </div>
                     }
                 </div>
@@ -61,30 +68,34 @@
             <div class="selector-row">
                 <span class="selector-label">VELIKOST: <span id="lblSize" class="selected-val"></span></span>
                 <div class="sizes-wrap">
-                    @foreach (var s in uniqueSizes)
+                    @foreach (var s in unikatniVelikosti)
                     {
-                        <div class="size-box" data-size="@s" onclick="selectSize('@s', this)">
+                        <div class="size-box" data-size="@s" onclick="vybratVelikost('@s', this)">
                             @s
                         </div>
                     }
                 </div>
             </div>
 
-            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+            <form id="kosikForm" asp-controller="Cart" asp-action="AddToCart" method="post">
                 <input type="hidden" name="productId" value="@Model.Id">
                 <input type="hidden" name="variantId" id="inpVariantId">
 
                 <div class="cart-actions">
                     <input type="number" name="quantity" value="1" min="1" class="qty-input">
-                    <button type="submit" id="btnCart" class="btn-buy" disabled>Vyberte variantu</button>
+                    <button type="submit" id="btnCart" class="btn-buy" disabled>VYBERTE VARIANTU</button>
                 </div>
             </form>
 
+            <div id="cartStatus" class="cart-notification" style="display:none;">
+                ✓ Produkt byl přidán do košíku
+            </div>
+
             <div class="stock-status" id="stockMsg"></div>
 
-            <div style="margin-top: 30px; font-size: 0.9rem; color: #777;">
-                <div><img src="~/images/materialy/img/Group 195.png" width="16" style="vertical-align:middle"> Skladem</div>
-                <div style="margin-top:5px"><img src="~/images/materialy/img/Group 196.png" width="16" style="vertical-align:middle"> Doprava zdarma</div>
+            <div class="extra-info">
+                <div><img src="~/images/materialy/img/Group 195.png" alt="Skladem"> Skladem</div>
+                <div><img src="~/images/materialy/img/Group 196.png" alt="Doprava"> Doprava zdarma</div>
             </div>
         </div>
     </div>
@@ -98,9 +109,9 @@
         </div>
 
         <div class="related-grid">
-            @if (related != null)
+            @if (souvisejici != null)
             {
-                foreach (var item in related)
+                foreach (var item in souvisejici)
                 {
                     <div class="related-card">
                         <div class="related-img-wrap">
@@ -118,57 +129,52 @@
 </section>
 
 <script>
-    function switchImg(el) {
+    function zmenitObrazek(el) {
         document.getElementById('mainImg').src = el.src;
         document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
     }
 
-    const variants = @Html.Raw(variantsJson);
-    let curColor = null;
-    let curSize = null;
+    const varianty = @Html.Raw(variantyJson);
+    let zvolenaBarva = null;
+    let zvolenaVelikost = null;
 
-    function selectColor(color, el) {
-        curColor = color;
-        curSize = null;
-
+    function vybratBarvu(color, el) {
+        zvolenaBarva = color;
+        zvolenaVelikost = null;
         document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
         document.getElementById('lblColor').innerText = color;
 
         document.querySelectorAll('.size-box').forEach(s => {
-            s.classList.remove('active');
-            s.classList.remove('disabled');
+            s.classList.remove('active', 'disabled');
         });
         document.getElementById('lblSize').innerText = "";
 
         document.querySelectorAll('.size-box').forEach(sb => {
-            const sVal = sb.getAttribute('data-size');
-            const v = variants.find(x => x.color === curColor && x.size === sVal);
+            const velVal = sb.getAttribute('data-size');
+            const v = varianty.find(x => x.color === zvolenaBarva && x.size === velVal);
             if(!v || v.stock <= 0) sb.classList.add('disabled');
         });
-
-        updateBtn();
+        aktualizovatTlacitko();
     }
 
-    function selectSize(size, el) {
-        if(!curColor) { alert('Vyberte nejdříve barvu.'); return; }
-
-        curSize = size;
+    function vybratVelikost(size, el) {
+        if(!zvolenaBarva) { alert('Vyberte nejdříve barvu.'); return; }
+        zvolenaVelikost = size;
         document.querySelectorAll('.size-box').forEach(s => s.classList.remove('active'));
         el.classList.add('active');
         document.getElementById('lblSize').innerText = size;
-
-        updateBtn();
+        aktualizovatTlacitko();
     }
 
-    function updateBtn() {
+    function aktualizovatTlacitko() {
         const btn = document.getElementById('btnCart');
         const inp = document.getElementById('inpVariantId');
         const msg = document.getElementById('stockMsg');
 
-        if(curColor && curSize) {
-            const v = variants.find(x => x.color === curColor && x.size === curSize);
+        if(zvolenaBarva && zvolenaVelikost) {
+            const v = varianty.find(x => x.color === zvolenaBarva && x.size === zvolenaVelikost);
             if(v && v.stock > 0) {
                 inp.value = v.id;
                 btn.disabled = false;
@@ -177,8 +183,30 @@
             }
         } else {
             btn.disabled = true;
-            btn.innerText = "Vyberte variantu";
+            btn.innerText = "VYBERTE VARIANTU";
             msg.innerText = "";
         }
     }
+
+    document.getElementById('kosikForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const statusDiv = document.getElementById('cartStatus');
+        const btn = document.getElementById('btnCart');
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                statusDiv.style.display = 'block';
+                btn.innerText = "PŘIDÁNO!";
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                    btn.innerText = "VLOŽIT DO KOŠÍKU";
+                }, 3000);
+            }
+        });
+    });
 </script>

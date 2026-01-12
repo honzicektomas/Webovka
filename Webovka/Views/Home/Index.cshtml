@@ -1,18 +1,18 @@
 ﻿@model List<Webovka.Models.Product>
 @{
-    ViewData["Title"] = "Domov";
+    ViewData["Title"] = "Domů";
 }
 
 <section class="hero">
     <div class="container">
         <div class="hero-content">
             <div class="hero-text">
-                <p class="hero-subtitle">NOVÁ DIEVČENSKÁ KOLEKCIA</p>
-                <p class="hero-subtitle">ŠETRNÁ K DETSKÝM NOŽIČKÁM</p>
-                <h1>NIELEN DO MESTA,<br>ALE AJ DO PRÍRODY</h1>
+                <p class="hero-subtitle">NOVÁ DÍVČÍ KOLEKCE</p>
+                <p class="hero-subtitle">ŠETRNÁ K DĚTSKÝM NOŽIČKÁM</p>
+                <h1>NEJEN DO MĚSTA,<br>ALE I DO PŘÍRODY</h1>
 
                 <a asp-controller="Product" asp-action="Index" class="btn-red">
-                    zobraziť produkty
+                    zobrazit produkty
                 </a>
             </div>
             <div class="hero-image">
@@ -32,17 +32,17 @@
     <div class="container">
         <div class="category-grid">
             <a asp-controller="Product" asp-action="Index" asp-route-categoryId="1" class="cat-card bg-blue" style="text-decoration:none;">
-                <h3>CHLAPČENSKÉ<br>TOPÁNKY</h3>
+                <h3>CHLAPECKÁ<br>OBUV</h3>
                 <img src="~/images/materialy/img/01.png" alt="Klučičí">
             </a>
 
             <a asp-controller="Product" asp-action="Index" asp-route-categoryId="2" class="cat-card bg-pink" style="text-decoration:none;">
-                <h3>DIEVČENSKÉ<br>TOPÁNKY</h3>
+                <h3>DÍVČÍ<br>OBUV</h3>
                 <img src="~/images/materialy/img/02.png" alt="Dívčí">
             </a>
 
             <div class="cat-card bg-grey">
-                <h3>AKO SPRÁVNE<br>VYBRAŤ?</h3>
+                <h3>JAK SPRÁVNĚ<br>VYBRAT?</h3>
                 <img src="~/images/materialy/img/03-01.png" alt="Rádce">
             </div>
         </div>
@@ -58,7 +58,7 @@
 
 <section class="products">
     <div class="container">
-        <h2 class="section-title">Najnovšie kúsky <span>v našej ponuke</span></h2>
+        <h2 class="section-title">Nejnovější kousky <span>v naší nabídce</span></h2>
 
         <div class="product-grid">
             @if (Model != null && Model.Any())
@@ -88,7 +88,7 @@
                             </div>
 
                             <a asp-controller="Product" asp-action="Detail" asp-route-id="@bota.Id">
-                                <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon" alt="Do košíka">
+                                <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon" alt="Do košíku">
                             </a>
                         </div>
                     </div>
@@ -97,14 +97,14 @@
             else
             {
                 <p style="text-align: center; width: 100%; color: #999;">
-                    Zatiaľ žiadne produkty. Pridajte ich v administrácii.
+                    Zatím žádné produkty. Přidejte je v administraci.
                 </p>
             }
         </div>
 
         <div style="text-align: center; margin-top: 40px;">
             <a asp-controller="Product" asp-action="Index" class="btn-red">
-                zobraziť celú ponuku
+                zobrazit celou nabídku
             </a>
         </div>
     </div>
@@ -124,19 +124,19 @@
                 <div class="feature-icon-circle">
                     <img src="~/images/materialy/img/Group 195.png" alt="Skladem">
                 </div>
-                <span>VŠETKO MÁME SKLADOM</span>
+                <span>VŠE MÁME SKLADEM</span>
             </a>
             <a class="feature-item">
                 <div class="feature-icon-circle">
                     <img src="~/images/materialy/img/Group 196.png" alt="Doprava">
                 </div>
-                <span>DOPRAVA ZADARMO</span>
+                <span>DOPRAVA ZDARMA</span>
             </a>
             <a href="#" class="feature-item">
                 <div class="feature-icon-circle">
                     <img src="~/images/materialy/img/Group 293.png" alt="Měření">
                 </div>
-                <span>AKO MERAŤ VEĽKOSTI</span>
+                <span>JAK MĚŘIT VELIKOSTI</span>
             </a>
         </div>
     </div>
@@ -144,11 +144,11 @@
 
 <section class="newsletter">
     <div class="container">
-        <h2>Nezmeškajte nové a výhodné akcie</h2>
-        <p>Zadajte svoj e-mail a obratom vám pošleme PDF s inšpiráciou zadarmo.</p>
+        <h2>Nezmeškejte nové a výhodné akce</h2>
+        <p>Zadejte svůj e-mail a obratem vám pošleme PDF s inspirací zdarma.</p>
         <form class="newsletter-form">
-            <input type="email" placeholder="Zadajte svoj email...">
-            <button type="submit" class="btn-red">PRIHLÁSIŤ</button>
+            <input type="email" placeholder="Zadejte svůj email...">
+            <button type="submit" class="btn-red">PŘIHLÁSIT</button>
         </form>
     </div>
 </section>

@@ -15,7 +15,26 @@ namespace Webovka.Controllers
 
         private bool isAdmin()
         {
-            return this.HttpContext.Session.GetString("UserRole") == "Admin";
+            return HttpContext.Session.GetString("UserRole") == "Admin";
+        }
+
+        private string UploadFile(IFormFile file)
+        {
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/uploads");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return "/images/uploads/" + fileName;
         }
 
         public IActionResult Index()
@@ -31,58 +50,29 @@ namespace Webovka.Controllers
             return View(products);
         }
 
-        public IActionResult Create()
-        {
-            if (!isAdmin()) return RedirectToAction("Index", "Home");
-            ViewBag.Categories = _context.Categories.ToList();
-            return View();
-        }
-
         [HttpPost]
-        public IActionResult Create(
-            Product product,
-            IFormFile mainImage,
-            List<IFormFile> otherImages,
-            string defaultColor,
-            string defaultColorHex,
-            string defaultSize,
-            int defaultStock
-        )
+        public IActionResult Create(Product product, IFormFile mainImage, List<IFormFile> galleryImages,
+                                    string defaultColor, string defaultColorHex, string defaultSize, int defaultStock)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
 
             if (mainImage != null && mainImage.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(mainImage.FileName);
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/uploads", fileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    mainImage.CopyTo(stream);
-                }
-                product.MainImageUrl = "/images/uploads/" + fileName;
+                product.MainImageUrl = UploadFile(mainImage);
             }
             else
             {
                 product.MainImageUrl = "/images/materialy/img/kosik.png";
             }
 
-            if (otherImages != null && otherImages.Count > 0)
+            if (galleryImages != null && galleryImages.Any())
             {
                 product.Images = new List<ProductImage>();
-                foreach (var file in otherImages)
+                foreach (var file in galleryImages)
                 {
                     if (file.Length > 0)
                     {
-                        var fName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        var fPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/uploads", fName);
-
-                        using (var stream = new FileStream(fPath, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
-                        }
-                        product.Images.Add(new ProductImage { ImageUrl = "/images/uploads/" + fName });
+                        product.Images.Add(new ProductImage { ImageUrl = UploadFile(file) });
                     }
                 }
             }
@@ -122,7 +112,6 @@ namespace Webovka.Controllers
             return View(product);
         }
 
-         
         [HttpPost]
         public IActionResult EditProductInfo(Product product, IFormFile mainImage)
         {
@@ -139,14 +128,7 @@ namespace Webovka.Controllers
 
             if (mainImage != null && mainImage.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(mainImage.FileName);
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/uploads", fileName);
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    mainImage.CopyTo(stream);
-                }
-                existing.MainImageUrl = "/images/uploads/" + fileName;
+                existing.MainImageUrl = UploadFile(mainImage);
             }
 
             _context.SaveChanges();
@@ -200,31 +182,19 @@ namespace Webovka.Controllers
             return RedirectToAction("Products");
         }
 
-
         [HttpPost]
         public IActionResult UploadGallery(int productId, List<IFormFile> galleryImages)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
 
-            if (galleryImages != null)
+            if (galleryImages != null && galleryImages.Any())
             {
                 foreach (var file in galleryImages)
                 {
                     if (file.Length > 0)
                     {
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/uploads", fileName);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
-                        }
-
-                        _context.ProductImages.Add(new ProductImage
-                        {
-                            ProductId = productId,
-                            ImageUrl = "/images/uploads/" + fileName
-                        });
+                        var url = UploadFile(file);
+                        _context.ProductImages.Add(new ProductImage { ProductId = productId, ImageUrl = url });
                     }
                 }
                 _context.SaveChanges();
@@ -263,7 +233,13 @@ namespace Webovka.Controllers
             if (!isAdmin()) return RedirectToAction("Index", "Home");
             return View(_context.Categories.Include(c => c.ParentCategory).ToList());
         }
-        public IActionResult CreateCategory() => View();
+
+        public IActionResult CreateCategory()
+        {
+            if (!isAdmin()) return RedirectToAction("Index", "Home");
+            return View();
+        }
+
         [HttpPost]
         public IActionResult CreateCategory(Category cat)
         {
@@ -272,11 +248,12 @@ namespace Webovka.Controllers
             _context.SaveChanges();
             return RedirectToAction("Categories");
         }
+
         public IActionResult DeleteCategory(int id)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
-            var c = _context.Categories.Find(id);
-            if (c != null) { _context.Categories.Remove(c); _context.SaveChanges(); }
+            var cat = _context.Categories.Find(id);
+            if (cat != null) { _context.Categories.Remove(cat); _context.SaveChanges(); }
             return RedirectToAction("Categories");
         }
 
@@ -286,6 +263,7 @@ namespace Webovka.Controllers
             var orders = _context.Orders.Where(o => o.State == "Ordered").OrderByDescending(o => o.OrderDate).ToList();
             return View(orders);
         }
+
         public IActionResult OrderDetail(int id)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
