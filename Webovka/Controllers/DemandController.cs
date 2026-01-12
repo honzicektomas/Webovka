@@ -11,7 +11,6 @@ namespace Webovka.Controllers
     {
         private MyContext _context = new MyContext();
 
-        // ZOBRAZENÍ FORMULÁŘE (Beze změny)
         public IActionResult Index()
         {
             int? orderId = HttpContext.Session.GetInt32("CurrentOrderId");
@@ -23,60 +22,65 @@ namespace Webovka.Controllers
                 .ThenInclude(pv => pv.Product)
                 .FirstOrDefault(o => o.Id == orderId && o.State == "New");
 
-            if (order == null || !order.OrderItems.Any()) return RedirectToAction("Index", "Cart");
+            if (order == null || order.OrderItems == null || !order.OrderItems.Any())
+                return RedirectToAction("Index", "Cart");
 
-            // Předvyplnění (pokud je user login)
-            if (ViewBag.IsAuthenticated == true)
+            // --- BEZPEČNÉ PŘEDVYPLNĚNÍ DAT ---
+            // Původní kód tady padal na int.Parse, pokud user nebyl přihlášený.
+            string userIdStr = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out int userId))
             {
-                // ... (tvůj kód pro předvyplnění)
+                var user = _context.Users.Find(userId);
+                if (user != null)
+                {
+                    if (string.IsNullOrEmpty(order.CustomerName)) order.CustomerName = user.FirstName + " " + user.LastName;
+                    if (string.IsNullOrEmpty(order.CustomerEmail)) order.CustomerEmail = user.Email;
+                    if (string.IsNullOrEmpty(order.CustomerPhone)) order.CustomerPhone = user.PhoneNumber;
+                    if (string.IsNullOrEmpty(order.CustomerAddress)) order.CustomerAddress = user.Address;
+                }
             }
 
             return View(order);
         }
 
-        // DOKONČENÍ - TADY BOLA CHYBA
         [HttpPost]
         public IActionResult Complete(Order formData)
         {
             int? orderId = HttpContext.Session.GetInt32("CurrentOrderId");
 
-            // 1. Načteme skutečný košík z DB
             var dbOrder = _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.ProductVariant)
                 .FirstOrDefault(o => o.Id == orderId);
 
-            if (dbOrder == null || !dbOrder.OrderItems.Any())
+            if (dbOrder == null || dbOrder.OrderItems == null || !dbOrder.OrderItems.Any())
             {
                 return RedirectToAction("Index", "Cart");
             }
 
-            // 2. VALIDACE: Zkontrolujeme, jestli jsou vyplněna pole
-            // Pokud je něco prázdné, vrátíme uživatele zpět
+            // Validace vyplnění
             if (string.IsNullOrWhiteSpace(formData.CustomerName) ||
                 string.IsNullOrWhiteSpace(formData.CustomerEmail) ||
                 string.IsNullOrWhiteSpace(formData.CustomerAddress) ||
                 string.IsNullOrWhiteSpace(formData.CustomerPhone))
             {
-                ViewBag.Error = "Prosím vyplňte všechna pole.";
+                ViewBag.Error = "Prosím vyplňte všechny údaje.";
 
-                // Musíme znovu nastavit data do dbOrder, aby se vypsaly ve formuláři
                 dbOrder.CustomerName = formData.CustomerName;
                 dbOrder.CustomerEmail = formData.CustomerEmail;
                 dbOrder.CustomerAddress = formData.CustomerAddress;
                 dbOrder.CustomerPhone = formData.CustomerPhone;
 
-                // Vrátíme view Index (formulář) s chybou
                 return View("Index", dbOrder);
             }
 
-            // 3. VŠE OK -> ULOŽÍME
+            // Uložení
             dbOrder.CustomerName = formData.CustomerName;
             dbOrder.CustomerEmail = formData.CustomerEmail;
             dbOrder.CustomerPhone = formData.CustomerPhone;
             dbOrder.CustomerAddress = formData.CustomerAddress;
 
-            dbOrder.State = "Ordered"; // Změna stavu
+            dbOrder.State = "Ordered";
             dbOrder.OrderDate = DateTime.Now;
 
             // Odečtení skladu
@@ -90,11 +94,8 @@ namespace Webovka.Controllers
             }
 
             _context.SaveChanges();
-
-            // Smazat session (košík je hotový)
             HttpContext.Session.Remove("CurrentOrderId");
 
-            // 4. PŘESMĚROVÁNÍ NA SUCCESS
             return RedirectToAction("Success");
         }
 

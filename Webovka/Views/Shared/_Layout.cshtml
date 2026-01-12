@@ -30,16 +30,18 @@
                 <div class="login-right">
                     @if (ViewBag.IsAuthenticated == true)
                     {
+                        @if (ViewBag.CurrentUserRole == "Admin")
+                        {
+                            <a asp-controller="Admin" asp-action="Index" class="btn-admin-badge">
+                                <span style="margin-right:5px;">⚙</span> ADMIN
+                            </a>
+                        }
+
                         <span style="margin-right: 15px; font-weight: bold; color: #2c3e50;">
                             @ViewBag.CurrentUserName
                         </span>
 
-                        @if (ViewBag.CurrentUserRole == "Admin")
-                        {
-                            <a asp-controller="Admin" asp-action="Index" style="color: red; margin-right: 10px; font-weight: bold;">ADMIN</a>
-                        }
-
-                        <a asp-controller="User" asp-action="Logout" style="text-decoration: underline;">Odhlásit</a>
+                        <a asp-controller="User" asp-action="Logout" style="text-decoration: underline; color: #7f8c8d; font-size: 0.9rem;">Odhlásit</a>
                     }
                     else
                     {

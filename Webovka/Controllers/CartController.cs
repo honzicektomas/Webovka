@@ -15,9 +15,16 @@ namespace Webovka.Controllers
         // Pomocná metoda: Získá nebo vytvoří objednávku (Košík)
         private Order GetCurrentOrder()
         {
-            // 1. Zkusíme najít ID objednávky v Session
-            int? sessionOrderId = HttpContext.Session.GetInt32("CurrentOrderId");
+            // 1. Zkusíme zjistit ID přihlášeného uživatele (BEZPEČNĚ)
+            int? userId = null;
+            string userIdStr = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out int parsedId))
+            {
+                userId = parsedId;
+            }
 
+            // 2. Zkusíme najít ID objednávky v Session
+            int? sessionOrderId = HttpContext.Session.GetInt32("CurrentOrderId");
             Order order = null;
 
             if (sessionOrderId != null)
@@ -29,22 +36,20 @@ namespace Webovka.Controllers
                     .FirstOrDefault(o => o.Id == sessionOrderId.Value && o.State == "New");
             }
 
-            // 2. Pokud v session není (nebo je neplatná), zkusíme najít podle přihlášeného uživatele
-            if (order == null && ViewBag.IsAuthenticated == true)
+            // 3. Pokud v session není, ale uživatel JE přihlášený, zkusíme najít jeho košík v DB
+            if (order == null && userId != null)
             {
-                int userId = int.Parse(HttpContext.Session.GetString("UserId"));
                 order = _context.Orders
                     .Include(o => o.OrderItems)
                     .FirstOrDefault(o => o.UserId == userId && o.State == "New");
             }
 
-            // 3. Pokud stále nemáme košík, vytvoříme nový
+            // 4. Pokud stále nemáme košík, vytvoříme nový
             if (order == null)
             {
                 order = new Order
                 {
-                    // Pokud je přihlášen, uložíme ID, jinak null
-                    UserId = ViewBag.IsAuthenticated == true ? int.Parse(HttpContext.Session.GetString("UserId")) : (int?)null,
+                    UserId = userId, // Tady už to bude správně (číslo nebo null)
                     OrderDate = DateTime.Now,
                     State = "New",
                     TotalPrice = 0,
@@ -57,7 +62,7 @@ namespace Webovka.Controllers
                 _context.SaveChanges();
             }
 
-            // DŮLEŽITÉ: Uložíme ID objednávky do Session, abychom ji našli příště (i jako host)
+            // DŮLEŽITÉ: Uložíme ID objednávky do Session
             HttpContext.Session.SetInt32("CurrentOrderId", order.Id);
 
             return order;
@@ -67,6 +72,9 @@ namespace Webovka.Controllers
         public IActionResult Index()
         {
             var order = GetCurrentOrder();
+            // Ošetření pro případ, že se vytvořil nový prázdný košík
+            if (order.OrderItems == null) order.OrderItems = new List<OrderItem>();
+
             return View(order.OrderItems.ToList());
         }
 
@@ -75,6 +83,9 @@ namespace Webovka.Controllers
         public IActionResult AddToCart(int variantId, int quantity)
         {
             var order = GetCurrentOrder();
+
+            // Pokud OrderItems je null (u nového košíku), inicializujeme
+            if (order.OrderItems == null) order.OrderItems = new List<OrderItem>();
 
             var existingItem = order.OrderItems.FirstOrDefault(oi => oi.ProductVariantId == variantId);
 
@@ -106,14 +117,16 @@ namespace Webovka.Controllers
         // ODEBRAT Z KOŠÍKU
         public IActionResult Remove(int itemId)
         {
-            var order = GetCurrentOrder(); // Načte aktuální (bezpečné)
-            var item = order.OrderItems.FirstOrDefault(i => i.Id == itemId);
-
-            if (item != null)
+            var order = GetCurrentOrder();
+            if (order.OrderItems != null)
             {
-                _context.OrderItems.Remove(item);
-                _context.SaveChanges();
-                UpdateOrderTotal(order.Id);
+                var item = order.OrderItems.FirstOrDefault(i => i.Id == itemId);
+                if (item != null)
+                {
+                    _context.OrderItems.Remove(item);
+                    _context.SaveChanges();
+                    UpdateOrderTotal(order.Id);
+                }
             }
             return RedirectToAction("Index");
         }
@@ -121,7 +134,7 @@ namespace Webovka.Controllers
         private void UpdateOrderTotal(int orderId)
         {
             var order = _context.Orders.Include(o => o.OrderItems).FirstOrDefault(o => o.Id == orderId);
-            if (order != null)
+            if (order != null && order.OrderItems != null)
             {
                 order.TotalPrice = order.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
                 _context.SaveChanges();

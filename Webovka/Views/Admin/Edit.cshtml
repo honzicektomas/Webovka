@@ -1,0 +1,157 @@
+﻿@model Webovka.Models.Product
+@{
+    ViewData["Title"] = "Správa produktu";
+}
+
+<div class="container" style="padding-top: 50px; padding-bottom: 80px;">
+
+    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h1 style="margin: 0;">Správa produktu: @Model.Name</h1>
+            <p style="color:#777; margin: 5px 0 0 0;">Kompletní editace, varianty a obrázky</p>
+        </div>
+        <a asp-action="Products" class="btn-red" style="background-color: #7f8c8d; text-decoration:none;">← Zpět na seznam</a>
+    </div>
+
+    <div style="background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 8px; margin-bottom: 40px;">
+        <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; color: #2c3e50;">1. Informace o produktu</h3>
+
+        <form asp-action="EditProductInfo" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+
+            <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                <div style="flex: 2; min-width: 300px;">
+                    <div style="margin-bottom: 15px;">
+                        <label class="form-label">Název</label>
+                        <input asp-for="Name" class="form-input" required>
+                    </div>
+                    <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <label class="form-label">Cena (Kč)</label>
+                            <input asp-for="Price" type="number" class="form-input" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="form-label">Stará cena (volitelné)</label>
+                            <input asp-for="OldPrice" type="number" class="form-input">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label class="form-label">Kategorie</label>
+                        <select asp-for="CategoryId" class="form-input">
+                            @if (ViewBag.Categories != null)
+                            {
+                                foreach (var c in ViewBag.Categories)
+                                {
+                                    <option value="@c.Id">@c.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label class="form-label">Popis</label>
+                        <textarea asp-for="Description" class="form-input" style="height: 120px;"></textarea>
+                    </div>
+                </div>
+
+                <div style="flex: 1; min-width: 250px; text-align: center; background: #fdfdfd; border: 2px dashed #ddd; padding: 20px; border-radius: 8px;">
+                    <label class="form-label" style="font-weight:bold; margin-bottom:15px; display:block;">Hlavní obrázek</label>
+                    <img src="@Model.MainImageUrl" style="max-width: 100%; height: 150px; object-fit: contain; margin-bottom: 15px; border: 1px solid #eee; background:#fff;">
+                    <input type="file" name="mainImage" accept="image/*" class="form-control">
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button type="submit" class="btn-red">ULOŽIT ZMĚNY</button>
+            </div>
+        </form>
+    </div>
+
+    <div style="background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 8px; margin-bottom: 40px;">
+        <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; color: #2c3e50;">2. Varianty</h3>
+
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <form asp-action="AddVariant" method="post" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <div style="flex: 1; min-width: 150px;">
+                    <label class="form-label">Barva</label>
+                    <input type="text" name="color" class="form-input" required placeholder="Modrá">
+                </div>
+                <div style="width: 70px;">
+                    <label class="form-label">Odstín</label>
+                    <input type="color" name="colorHex" value="#000000" style="height: 42px; width: 100%; padding: 0; cursor: pointer;">
+                </div>
+                <div style="flex: 1; min-width: 100px;">
+                    <label class="form-label">Velikost</label>
+                    <input type="text" name="size" class="form-input" required placeholder="38">
+                </div>
+                <div style="width: 100px;">
+                    <label class="form-label">Ks skladem</label>
+                    <input type="number" name="stock" class="form-input" value="10" required>
+                </div>
+                <button type="submit" class="btn-red" style="background-color: #27ae60;">+ Přidat</button>
+            </form>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+                <tr><th>Barva</th><th>Velikost</th><th>Skladem (ks)</th><th class="text-right">Akce</th></tr>
+            </thead>
+            <tbody>
+                @if (Model.Variants != null)
+                {
+                    foreach (var v in Model.Variants)
+                    {
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <span style="display:inline-block; width:18px; height:18px; background-color:@v.ColorHex; border:1px solid #ccc; border-radius:50%; vertical-align:middle; margin-right:5px;"></span> @v.Color
+                            </td>
+                            <td style="vertical-align: middle;">@v.Size</td>
+                            <td style="vertical-align: middle;">
+                                <form asp-action="UpdateStock" method="post" style="display:flex; align-items:center; gap:5px;">
+                                    <input type="hidden" name="variantId" value="@v.Id" />
+                                    <input type="number" name="newStock" value="@v.StockQuantity" style="width: 70px; padding: 5px; text-align: center; border: 1px solid #ddd; border-radius: 4px;">
+                                    <button type="submit" style="background:none; border:none; color:#27ae60; font-weight:bold; cursor:pointer; font-size:1.2rem;">✔</button>
+                                </form>
+                            </td>
+                            <td class="text-right" style="vertical-align: middle;">
+                                <a asp-action="DeleteVariant" asp-route-id="@v.Id" onclick="return confirm('Smazat variantu?')" style="color: #d93025; font-weight: bold; text-decoration: none;">✕ Smazat</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div style="background: #fff; border: 1px solid #eee; padding: 25px; border-radius: 8px;">
+        <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; color: #2c3e50;">3. Galerie dalších obrázků</h3>
+
+        <form asp-action="UploadGallery" method="post" enctype="multipart/form-data" style="margin-bottom: 30px; background: #fdfdfd; border: 2px dashed #3498db; padding: 20px; text-align: center; border-radius: 8px;">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <label style="font-weight:bold; color: #3498db; display:block; margin-bottom:10px;">Nahrát další fotky</label>
+
+            <input type="file" name="galleryImages" multiple accept="image/*" class="form-control" style="max-width: 400px; margin: 0 auto 15px auto;">
+
+            <button type="submit" class="btn-red" style="background-color: #3498db;">Nahrát obrázky</button>
+        </form>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            @if (Model.Images != null && Model.Images.Any())
+            {
+                foreach (var img in Model.Images)
+                {
+                    <div style="border: 1px solid #eee; padding: 10px; border-radius: 8px; text-align: center; background: #fff; width: 150px;">
+                        <div style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px;">
+                            <img src="@img.ImageUrl" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                        <a asp-action="DeleteImage" asp-route-id="@img.Id" onclick="return confirm('Smazat obrázek?')" style="color: #d93025; font-weight: bold; text-decoration: none;">✕ Smazat</a>
+                    </div>
+                }
+            }
+            else
+            {
+                <p style="color:#999;">Žádné další obrázky.</p>
+            }
+        </div>
+    </div>
+
+</div>

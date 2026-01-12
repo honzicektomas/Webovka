@@ -1,14 +1,18 @@
 ﻿@model List<Webovka.Models.Product>
 @{
-    ViewData["Title"] = "Správa produktů";
+    ViewData["Title"] = "Produkty";
 }
 
-<div class="container" style="padding-top: 50px;">
-    <div class="admin-header">
-        <h1>Seznam Produktů</h1>
+<div class="container" style="padding-top: 50px; padding-bottom: 50px;">
+
+    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <div>
-            <a asp-action="Create" class="btn-red">+ Nový produkt</a>
-            <a asp-action="Index" class="btn-red" style="background:#777; margin-left:10px;">Zpět</a>
+            <h1 style="margin: 0;">Seznam Produktů</h1>
+            <p style="color:#777; margin: 5px 0 0 0;">Správa zboží a variant</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn-red" style="margin-right: 10px; text-decoration:none;">+ Nový produkt</a>
+            <a asp-action="Index" class="btn-red" style="background-color: #7f8c8d; text-decoration:none;">← Zpět na Dashboard</a>
         </div>
     </div>
 
@@ -16,8 +20,8 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Obrázek</th>
                 <th>Název</th>
+                <th>Cena</th>
                 <th>Kategorie</th>
                 <th class="text-right">Akce</th>
             </tr>
@@ -27,16 +31,15 @@
             {
                 <tr>
                     <td>@item.Id</td>
-                    <td><img src="@item.MainImageUrl" class="admin-img-thumb"></td>
                     <td>
-                        <strong>@item.Name</strong><br>
-                        <span style="font-size:0.8em; color:#d93025;">@item.Price Kč</span>
+                        <img src="@item.MainImageUrl" width="40" style="vertical-align:middle; margin-right:10px; border-radius:4px;">
+                        <strong>@item.Name</strong>
                     </td>
-                    <td>@(item.Category?.Name ?? "-")</td>
+                    <td>@item.Price Kč</td>
+                    <td>@(item.Category?.Name ?? "Nezařazeno")</td>
                     <td class="text-right">
-                        <a asp-action="ProductVariants" asp-route-id="@item.Id" style="color: #2c3e50; margin-right: 15px;">Varianty (Barvy/Vel.)</a>
-
-                        <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Smazat?')" class="action-delete">Smazat</a>
+                        <a asp-action="ProductVariants" asp-route-id="@item.Id" class="btn-red" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px; text-decoration:none;">Varianty</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Smazat produkt?')" style="color: #d93025; font-weight: bold; text-decoration: none;">✕ Smazat</a>
                     </td>
                 </tr>
             }

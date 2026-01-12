@@ -3,12 +3,16 @@
     ViewData["Title"] = "Kategorie";
 }
 
-<div class="container" style="padding-top: 50px;">
-    <div class="admin-header">
-        <h1>Správa Kategorií</h1>
+<div class="container" style="padding-top: 50px; padding-bottom: 50px;">
+
+    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <div>
-            <a asp-action="CreateCategory" class="btn-red">+ Nová kategorie</a>
-            <a asp-action="Index" class="btn-red" style="background:#777; margin-left:10px;">Zpět</a>
+            <h1 style="margin: 0;">Správa Kategorií</h1>
+            <p style="color:#777; margin: 5px 0 0 0;">Přehled všech kategorií e-shopu</p>
+        </div>
+        <div>
+            <a asp-action="CreateCategory" class="btn-red" style="margin-right: 10px; text-decoration:none;">+ Nová kategorie</a>
+            <a asp-action="Index" class="btn-red" style="background-color: #7f8c8d; text-decoration:none;">← Zpět na Dashboard</a>
         </div>
     </div>
 
@@ -27,9 +31,9 @@
                 <tr>
                     <td>@item.Id</td>
                     <td><strong>@item.Name</strong></td>
-                    <td>@(item.ParentCategory?.Name ?? "--- Hlavní kategorie ---")</td>
+                    <td>@(item.ParentCategory?.Name ?? "- Hlavní kategorie -")</td>
                     <td class="text-right">
-                        <a asp-action="DeleteCategory" asp-route-id="@item.Id" onclick="return confirm('Smazat?')" class="action-delete" style="color: #d93025; font-weight: bold;">Smazat</a>
+                        <a asp-action="DeleteCategory" asp-route-id="@item.Id" onclick="return confirm('Opravdu smazat?')" style="color: #d93025; font-weight: bold; text-decoration: none;">✕ Smazat</a>
                     </td>
                 </tr>
             }

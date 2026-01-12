@@ -883,3 +883,26 @@ a.feature-item {
         text-align: center;
     }
 }
+
+.btn-admin-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #d93025;
+    color: #fff !important; 
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    margin-right: 15px;
+    box-shadow: 0 2px 4px rgba(217, 48, 37, 0.2);
+}
+
+    .btn-admin-badge:hover {
+        background-color: #b0261d;
+        text-decoration: none;
+    }

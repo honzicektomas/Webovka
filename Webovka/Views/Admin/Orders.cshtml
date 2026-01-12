@@ -3,10 +3,14 @@
     ViewData["Title"] = "Objednávky";
 }
 
-<div class="container" style="padding-top: 50px;">
-    <div class="admin-header">
-        <h1>Přehled Objednávek</h1>
-        <a asp-action="Index" class="btn-red" style="background:#777;">Zpět</a>
+<div class="container" style="padding-top: 50px; padding-bottom: 50px;">
+
+    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h1 style="margin: 0;">Přehled Objednávek</h1>
+            <p style="color:#777; margin: 5px 0 0 0;">Historie všech nákupů</p>
+        </div>
+        <a asp-action="Index" class="btn-red" style="background-color: #7f8c8d; text-decoration:none;">← Zpět na Dashboard</a>
     </div>
 
     <table class="admin-table">
@@ -27,13 +31,15 @@
                     <td>#@o.Id</td>
                     <td>@o.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>
-                        @o.CustomerName<br>
+                        <strong>@o.CustomerName</strong><br>
                         <span style="font-size:0.8em; color:#777;">@o.CustomerEmail</span>
                     </td>
                     <td style="font-weight:bold;">@o.TotalPrice Kč</td>
-                    <td>@o.State</td>
+                    <td>
+                        <span style="color: #27ae60; font-weight: bold; border: 1px solid #27ae60; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">ODESLÁNO</span>
+                    </td>
                     <td class="text-right">
-                        <a asp-action="OrderDetail" asp-route-id="@o.Id" class="btn-red" style="padding: 5px 10px; font-size: 0.8rem;">Detail</a>
+                        <a asp-action="OrderDetail" asp-route-id="@o.Id" class="btn-red" style="padding: 5px 10px; font-size: 0.8rem; text-decoration:none;">Detail</a>
                     </td>
                 </tr>
             }

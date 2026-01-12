@@ -1,4 +1,4 @@
-/* Globální fix pro patièku */
+/* --- GLOBÁLNÍ FIXY --- */
 html, body {
     height: 100%;
     margin: 0;
@@ -8,6 +8,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    font-family: 'Open Sans', sans-serif;
 }
 
 main {
@@ -30,189 +31,310 @@ main {
     flex-wrap: wrap;
 }
 
-/* LEVÝ SLOUPEC - FOTKA */
+/* LEVÝ SLOUPEC: GALERIE */
 .detail-gallery {
     flex: 1;
-    min-width: 350px;
+    min-width: 400px;
 }
 
-.main-image-wrapper img {
+.main-image-wrapper {
     width: 100%;
-    border-radius: 12px;
+    height: 500px;
     border: 1px solid #eee;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 15px;
 }
 
-/* PRAVÝ SLOUPEC - INFO */
+    .main-image-wrapper img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+
+.gallery-thumbs {
+    display: flex;
+    gap: 10px;
+}
+
+.thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #eee;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+
+    .thumb:hover, .thumb.active {
+        opacity: 1;
+        border-color: #333;
+    }
+
+/* PRAVÝ SLOUPEC: INFO */
 .detail-info {
     flex: 1;
-    min-width: 350px;
+    min-width: 400px;
 }
 
-.info-category {
-    color: #999;
+.info-cat {
     text-transform: uppercase;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-    display: block;
+    color: #999;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
 }
 
 .info-title {
-    font-size: 2.2rem;
-    color: #2c3e50;
-    margin: 0 0 20px 0;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #000;
 }
 
 .info-price {
-    font-size: 2rem;
-    color: #d93025;
+    font-size: 1.8rem;
     font-weight: bold;
+    color: #d93025;
     margin-bottom: 20px;
 }
 
-    .info-price .old {
-        font-size: 1.2rem;
-        color: #ccc;
-        text-decoration: line-through;
-        margin-left: 15px;
-        font-weight: normal;
-    }
-
 .info-desc {
-    color: #666;
+    color: #555;
     line-height: 1.6;
     margin-bottom: 30px;
-    border-bottom: 1px solid #eee;
     padding-bottom: 30px;
+    border-bottom: 1px solid #eee;
 }
 
-/* --- VÝBÌR VARIANT (JS) --- */
-.selector-group {
+/* VÝBÌR VARIANT (Dle reference) */
+.selector-row {
     margin-bottom: 25px;
 }
 
-.selector-title {
+.selector-label {
     font-weight: bold;
-    margin-bottom: 10px;
     display: block;
-    color: #2c3e50;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
 }
 
-.selection-value {
+.selected-val {
     font-weight: normal;
     color: #d93025;
     margin-left: 5px;
+    text-transform: none;
 }
 
-/* Barvy */
-.colors-grid {
+/* BARVY - KOLEÈKA */
+.colors-wrap {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
-.color-btn {
-    width: 40px;
-    height: 40px;
+.color-circle {
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    border: 2px solid #eee;
+    border: 1px solid #ddd;
     cursor: pointer;
-    transition: all 0.2s;
     position: relative;
+    transition: transform 0.2s;
 }
 
-    .color-btn:hover {
-        border-color: #999;
+    .color-circle:hover {
         transform: scale(1.1);
     }
 
-    .color-btn.active {
-        border-color: #2c3e50;
-        box-shadow: 0 0 0 2px #fff inset;
+    .color-circle.active {
+        border: 2px solid #000;
         transform: scale(1.1);
     }
 
-/* Velikosti */
-.sizes-grid {
+/* VELIKOSTI - ÈTVEREÈKY */
+.sizes-wrap {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-.size-btn {
-    min-width: 50px;
-    height: 40px;
+.size-box {
+    min-width: 45px;
+    height: 45px;
     border: 1px solid #ddd;
-    background: #fff;
-    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-weight: bold;
     color: #333;
-    transition: all 0.2s;
+    transition: 0.2s;
+    background: #fff;
 }
 
-    .size-btn:hover {
-        border-color: #2c3e50;
+    .size-box:hover {
+        border-color: #000;
     }
 
-    .size-btn.active {
-        background-color: #2c3e50;
+    .size-box.active {
+        background: #000;
         color: #fff;
-        border-color: #2c3e50;
+        border-color: #000;
     }
 
-    .size-btn.disabled {
+    .size-box.disabled {
         opacity: 0.3;
         cursor: not-allowed;
-        background: #f9f9f9;
-        text-decoration: line-through;
+        background: #f5f5f5;
+        color: #999;
         pointer-events: none;
     }
 
-/* Košík */
+/* KOŠÍK */
 .cart-actions {
     display: flex;
     gap: 15px;
-    margin-top: 30px;
-    border-top: 1px solid #eee;
-    padding-top: 30px;
+    margin-top: 40px;
 }
 
 .qty-input {
-    width: 70px;
+    width: 60px;
+    height: 50px;
     text-align: center;
-    font-size: 1.2rem;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-}
-
-.btn-add {
-    flex: 1;
-    background-color: #d93025;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
+    border: 1px solid #ddd;
     font-weight: bold;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: 0.2s;
+    font-size: 1.1rem;
 }
 
-    .btn-add:hover {
-        background-color: #b0261d;
+.btn-buy {
+    flex: 1;
+    background: #d93025;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    height: 50px;
+    transition: background 0.3s;
+}
+
+    .btn-buy:hover {
+        background: #b0261d;
     }
 
-    .btn-add:disabled {
-        background-color: #ccc;
+    .btn-buy:disabled {
+        background: #ccc;
         cursor: not-allowed;
     }
 
-.stock-info {
-    margin-top: 20px;
+/* SKLADEM */
+.stock-status {
+    margin-top: 15px;
     color: #27ae60;
     font-weight: bold;
     font-size: 0.9rem;
+}
+
+/* --- MOHLO BY SE LÍBIT (GRID 4 vedle sebe) --- */
+.related-section {
+    padding: 60px 0;
+    background: #fff;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+    .section-header h2 {
+        font-size: 2rem;
+        font-weight: normal;
+        margin: 0;
+    }
+
+        .section-header h2 span {
+            font-weight: bold;
+        }
+
+.separator {
+    width: 50px;
+    height: 2px;
+    background: #ddd;
+    margin: 15px auto;
+    position: relative;
+}
+
+    .separator::after {
+        content: '?';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        padding: 0 10px;
+        color: #ccc;
+        font-size: 14px;
+    }
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 vedle sebe pøesnì dle reference */
+    gap: 30px;
+}
+
+.related-card {
+    text-align: center;
+}
+
+.related-img-wrap {
+    position: relative;
+    margin-bottom: 15px;
+    overflow: hidden;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .related-img-wrap img {
+        max-width: 100%;
+        max-height: 100%;
+        transition: transform 0.3s;
+    }
+
+.related-card:hover .related-img-wrap img {
+    transform: scale(1.05);
+}
+
+.related-title {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.related-price {
+    color: #d93025;
+    font-weight: bold;
+}
+
+@media (max-width: 992px) {
+    .detail-container {
+        flex-direction: column;
+    }
+
+    .related-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
