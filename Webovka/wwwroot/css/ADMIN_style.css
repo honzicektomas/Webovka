@@ -1,5 +1,4 @@
-﻿/* Tabulka v administraci */
-.admin-header {
+﻿.admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -41,7 +40,6 @@
     color: #d93025;
 }
 
-/* Formulář v administraci */
 .admin-form-container {
     max-width: 600px;
     margin: 0 auto;
@@ -52,4 +50,50 @@
     display: flex;
     align-items: center;
     gap: 20px;
+}
+.admin-dashboard-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.admin-tile {
+    flex: 1;
+    min-width: 250px;
+    background: #f9f9f9;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    text-decoration: none;
+    color: #2c3e50;
+    transition: all 0.3s;
+}
+
+    .admin-tile:hover {
+        background: #fff;
+        border-color: #d93025;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+    }
+
+    .admin-tile h3 {
+        margin-top: 15px;
+        font-size: 1.5rem;
+    }
+
+    .admin-tile img {
+        opacity: 0.7;
+    }
+
+/* Styly pro varianty */
+.variant-form {
+    background: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
 }

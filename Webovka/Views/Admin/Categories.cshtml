@@ -1,0 +1,38 @@
+﻿@model List<Webovka.Models.Category>
+@{
+    ViewData["Title"] = "Kategorie";
+}
+
+<div class="container" style="padding-top: 50px;">
+    <div class="admin-header">
+        <h1>Správa Kategorií</h1>
+        <div>
+            <a asp-action="CreateCategory" class="btn-red">+ Nová kategorie</a>
+            <a asp-action="Index" class="btn-red" style="background:#777; margin-left:10px;">Zpět</a>
+        </div>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Název</th>
+                <th>Nadřazená kategorie</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td><strong>@item.Name</strong></td>
+                    <td>@(item.ParentCategory?.Name ?? "--- Hlavní kategorie ---")</td>
+                    <td class="text-right">
+                        <a asp-action="DeleteCategory" asp-route-id="@item.Id" onclick="return confirm('Smazat?')" class="action-delete" style="color: #d93025; font-weight: bold;">Smazat</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

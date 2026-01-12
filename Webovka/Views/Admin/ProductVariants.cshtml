@@ -1,0 +1,56 @@
+﻿@model Webovka.Models.Product
+@{
+    ViewData["Title"] = "Varianty produktu";
+}
+
+<div class="container" style="padding-top: 50px;">
+    <h2>Varianty: @Model.Name</h2>
+    <p>Přidejte kombinace barev a velikostí, které jsou skladem.</p>
+    <div class="variant-form">
+        <form asp-action="AddVariant" method="post" style="display:flex; gap:15px; width:100%; align-items:flex-end;">
+            <input type="hidden" name="productId" value="@Model.Id" />
+
+            <div style="flex:1;">
+                <label class="form-label">Název barvy</label>
+                <input type="text" name="color" class="form-input" required placeholder="Např. Modrá">
+            </div>
+
+            <div style="width: 80px;">
+                <label class="form-label">Odstín</label>
+                <input type="color" name="colorHex" class="form-input" value="#000000" style="height: 42px; padding: 2px; cursor: pointer;">
+            </div>
+
+            <div style="flex:1;">
+                <label class="form-label">Velikost</label>
+                <input type="text" name="size" class="form-input" required placeholder="Např. 38">
+            </div>
+
+            <div style="width: 100px;">
+                <label class="form-label">Skladem (ks)</label>
+                <input type="number" name="stock" class="form-input" value="1" required>
+            </div>
+
+            <button type="submit" class="btn-red">Přidat</button>
+        </form>
+    </div>
+
+    <table class="admin-table">
+        <tbody>
+            @if (Model.Variants != null)
+            {
+                foreach (var v in Model.Variants)
+                {
+                    <tr>
+                        <td>
+                            <span style="display:inline-block; width:15px; height:15px; background-color:@v.ColorHex; border:1px solid #ccc; margin-right:5px; vertical-align:middle; border-radius:50%;"></span>
+                            @v.Color
+                        </td>
+                        <td>@v.Size</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Products" class="action-link">← Zpět na seznam produktů</a>
+</div>

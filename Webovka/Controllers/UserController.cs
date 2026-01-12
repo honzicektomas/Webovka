@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Webovka.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System;
@@ -9,28 +8,26 @@ namespace Webovka.Controllers
 {
     public class UserController : BaseController
     {
-        private MyContext context;
+        // Instance contextu pro celý controller (bez DI, jak chceš)
+        private MyContext _context = new MyContext();
 
-
-        public UserController()
-        {
-            context = new MyContext();
-        }
-
+        // GET: Zobrazí formulář (Index.cshtml)
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Index()
         {
             return View();
         }
 
+        // POST: Zpracuje přihlášení
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-           
-            var user = context.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == password);
+            // Použijeme _context definovaný nahoře
+            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == password);
 
             if (user != null)
             {
+                // Uložíme do Session
                 this.HttpContext.Session.SetString("UserId", user.Id.ToString());
                 this.HttpContext.Session.SetString("UserName", user.FirstName);
                 this.HttpContext.Session.SetString("UserRole", user.Role);
@@ -38,33 +35,30 @@ namespace Webovka.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Error = "Špatný email nebo heslo.";
-            return View();
-            
+            ViewBag.LoginError = "Špatný email nebo heslo.";
+            return View("Index"); // Vrátíme se na formulář s chybou
         }
 
         [HttpPost]
         public IActionResult Register(User model)
         {
+            if (_context.Users.Any(u => u.Email == model.Email))
+            {
+                ViewBag.RegisterError = "Tento email už je obsazený.";
+                return View("Index");
+            }
 
-                if (context.Users.Any(u => u.Email == model.Email))
-                {
-                    ViewBag.RegisterError = "Email už existuje.";
-                    return View("Login"); 
-                }
+            model.Role = "Customer";
+            model.RegisteredAt = DateTime.Now;
 
-                model.Role = "Customer";
-                model.RegisteredAt = DateTime.Now;
+            _context.Users.Add(model);
+            _context.SaveChanges();
 
-                context.Users.Add(model);
-                context.SaveChanges();
+            this.HttpContext.Session.SetString("UserId", model.Id.ToString());
+            this.HttpContext.Session.SetString("UserName", model.FirstName);
+            this.HttpContext.Session.SetString("UserRole", model.Role);
 
-                this.HttpContext.Session.SetString("UserId", model.Id.ToString());
-                this.HttpContext.Session.SetString("UserName", model.FirstName);
-                this.HttpContext.Session.SetString("UserRole", model.Role);
-
-                return RedirectToAction("Index", "Home");
-            
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Logout()

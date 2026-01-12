@@ -1,45 +1,32 @@
-﻿@model List<Webovka.Models.Product>
-@{
-    ViewData["Title"] = "Administrace";
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="container" style="padding-top: 50px; padding-bottom: 50px;">
-    <div class="admin-header">
-        <h1>Administrace E-shopu</h1>
-        <a asp-action="Create" class="btn-red" style="text-decoration:none;">+ Přidat nový produkt</a>
+<div class="container" style="padding-top: 50px; padding-bottom: 80px;">
+    <h1>Vítejte v administraci</h1>
+    <p>Vyberte sekci, kterou chcete spravovat.</p>
+
+    <div class="admin-dashboard-grid">
+        <a asp-action="Orders" class="admin-tile">
+            <img src="~/images/materialy/img/kosik.png" width="60" alt="Objednávky">
+            <h3>Objednávky</h3>
+            <p>Přehled přijatých objednávek</p>
+        </a>
+
+        <a asp-action="Products" class="admin-tile">
+            <img src="~/images/materialy/img/loupe.png" width="60" alt="Produkty">
+            <h3>Produkty</h3>
+            <p>Přidat, upravit nebo smazat produkty a varianty</p>
+        </a>
+
+        <a asp-action="Categories" class="admin-tile">
+            <img src="~/images/materialy/img/03-01.png" width="60" alt="Kategorie">
+            <h3>Kategorie</h3>
+            <p>Správa stromové struktury</p>
+        </a>
     </div>
 
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Foto</th>
-                <th>Název</th>
-                <th>Cena</th>
-                <th>Kategorie</th>
-                <th style="text-align: right;">Akce</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>
-                        <img src="@item.MainImageUrl" class="admin-img-thumb" alt="Foto">
-                    </td>
-                    <td><strong>@item.Name</strong></td>
-                    <td style="color: #d93025; font-weight:bold;">@item.Price Kč</td>
-                    <td>@(item.Category?.Name ?? "-")</td>
-                    <td style="text-align: right;">
-                        <a asp-action="Delete" asp-route-id="@item.Id"
-                           onclick="return confirm('Opravdu smazat?')"
-                           class="action-link action-delete">SMAZAT</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <a asp-controller="Home" asp-action="Index" class="action-link">← Zpět na web</a>
+    <div style="margin-top: 40px; text-align: center;">
+        <a asp-controller="Home" asp-action="Index" class="btn-red">Zpět na E-shop</a>
+    </div>
 </div>

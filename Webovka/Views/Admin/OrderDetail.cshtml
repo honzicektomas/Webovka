@@ -1,0 +1,54 @@
+﻿@model Webovka.Models.Order
+@{
+    ViewData["Title"] = "Detail objednávky";
+}
+
+<div class="container" style="padding-top: 50px;">
+    <h2>Objednávka #@Model.Id</h2>
+    <p>Datum: @Model.OrderDate.ToString("g")</p>
+
+    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3>Údaje o zákazníkovi</h3>
+        <p>
+            <strong>Jméno:</strong> @Model.CustomerName<br>
+            <strong>Email:</strong> @Model.CustomerEmail<br>
+            <strong>Telefon:</strong> @Model.CustomerPhone<br>
+            <strong>Adresa:</strong> @Model.CustomerAddress
+        </p>
+    </div>
+
+    <h3>Položky</h3>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Varianta</th>
+                <th>Množství</th>
+                <th>Cena/ks</th>
+                <th class="text-right">Celkem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems)
+            {
+                <tr>
+                    <td>@(item.ProductVariant?.Product?.Name ?? "Neznámý produkt")</td>
+                    <td>
+                        Barva: @(item.ProductVariant?.Color), Vel: @(item.ProductVariant?.Size)
+                    </td>
+                    <td>@item.Quantity ks</td>
+                    <td>@item.UnitPrice Kč</td>
+                    <td class="text-right"><strong>@(item.Quantity* item.UnitPrice) Kč</strong></td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-right"><strong>CELKEM K ÚHRADĚ:</strong></td>
+                <td class="text-right" style="color: #d93025; font-size: 1.2rem; font-weight: bold;">@Model.TotalPrice Kč</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a asp-action="Orders" class="action-link">← Zpět na seznam</a>
+</div>

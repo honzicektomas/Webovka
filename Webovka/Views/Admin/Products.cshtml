@@ -1,0 +1,45 @@
+﻿@model List<Webovka.Models.Product>
+@{
+    ViewData["Title"] = "Správa produktů";
+}
+
+<div class="container" style="padding-top: 50px;">
+    <div class="admin-header">
+        <h1>Seznam Produktů</h1>
+        <div>
+            <a asp-action="Create" class="btn-red">+ Nový produkt</a>
+            <a asp-action="Index" class="btn-red" style="background:#777; margin-left:10px;">Zpět</a>
+        </div>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Obrázek</th>
+                <th>Název</th>
+                <th>Kategorie</th>
+                <th class="text-right">Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td><img src="@item.MainImageUrl" class="admin-img-thumb"></td>
+                    <td>
+                        <strong>@item.Name</strong><br>
+                        <span style="font-size:0.8em; color:#d93025;">@item.Price Kč</span>
+                    </td>
+                    <td>@(item.Category?.Name ?? "-")</td>
+                    <td class="text-right">
+                        <a asp-action="ProductVariants" asp-route-id="@item.Id" style="color: #2c3e50; margin-right: 15px;">Varianty (Barvy/Vel.)</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Smazat?')" class="action-delete">Smazat</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

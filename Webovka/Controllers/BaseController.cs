@@ -10,9 +10,13 @@ namespace Webovka.Controllers
         {
             base.OnActionExecuting(context);
 
-            this.ViewBag.CurrentUserName = this.HttpContext.Session.GetString("UserName");
-            this.ViewBag.CurrentUserRole = this.HttpContext.Session.GetString("UserRole");
-            this.ViewBag.IsAuthenticated = this.HttpContext.Session.GetString("UserId") != null;
+            var userId = this.HttpContext.Session.GetString("UserId");
+            var userName = this.HttpContext.Session.GetString("UserName");
+            var userRole = this.HttpContext.Session.GetString("UserRole");
+
+            this.ViewBag.IsAuthenticated = userId != null;
+            this.ViewBag.CurrentUserName = userName;
+            this.ViewBag.CurrentUserRole = userRole;
         }
     }
 }

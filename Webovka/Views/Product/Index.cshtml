@@ -1,236 +1,116 @@
-﻿<nav class="main-nav">
+﻿@model Webovka.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+    var related = ViewBag.RelatedProducts as List<Webovka.Models.Product>;
+}
+
+<section class="products" style="padding-top: 50px;">
     <div class="container">
-        <ul class="nav-menu">
-            <li>
-                <a href="#" class="nav-link">
-                    Chlapecké
-                    <img src="~/images/materialy/img/Group 169.png" class="nav-icon-img" alt="Boy">
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link">
-                    Dívčí
-                    <img src="~/images/materialy/img/Group 171.png" class="nav-icon-img" alt="Girl">
-                </a>
-            </li>
-            <li><a href="#" class="nav-link">Doplňky</a></li>
-            <li><a href="#" class="nav-link">Ostatní</a></li>
-            <li><a href="#" class="nav-link">Kontakt</a></li>
-        </ul>
-    </div>
-</nav>
+        <div style="display: flex; flex-wrap: wrap; gap: 40px;">
 
-<div class="container">
-    <div class="breadcrumbs">
-        <a href="#">Domů</a> > <a href="#">Dívčí boty</a> > <span>Tenisky</span>
-    </div>
-</div>
-
-<section class="product-main">
-    <div class="container product-detail-wrapper">
-
-        <div class="gallery-col">
-            <div class="main-image">
-                <img src="~/images/materialy/img2/papucky-hnede1.png" alt="Benjamin Velcro">
-            </div>
-            <div class="thumbs-row">
-                <img src="~/images/materialy/img2/papucky-hnede1.png" class="thumb-img" alt="Thumb 1">
-                <img src="~/images/materialy/img2/papucky-ruzove1.png" class="thumb-img" alt="Thumb 2">
-                <img src="~/images/materialy/img2/boty-se-spickou.png" class="thumb-img" alt="Thumb 3">
-            </div>
-        </div>
-
-        <div class="details-col">
-            <div class="brand-row">
-                <h1 class="product-h1">Benjamin Velcro Dark Grey</h1>
-                <img src="~/images/materialy/img/bundgaard-logo.png" class="brand-logo-img" alt="Bundgaard" onerror="this.style.display='none'">
+            <div style="flex: 1; min-width: 300px;">
+                <img src="@Model.MainImageUrl" alt="@Model.Name" style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
             </div>
 
-            <p class="short-desc">
-                Tyhle botky mají styl! Kožené barefoot tenisky vhodné na užší až normální nožku. Vyrobené z kvalitní hladké kůže v kombinaci s textilem. Tenká podešev přesahuje přes prsty, aby byla botka chráněna před poškozením.
-            </p>
+            <div style="flex: 1; min-width: 300px;">
+                <h4 style="color: #999; text-transform: uppercase;">
+                    @(Model.Category?.Name ?? "Kategorie")
+                </h4>
+                <h1 style="margin: 10px 0 20px 0;">@Model.Name</h1>
 
-            <div class="options-row">
-                <div class="option-group">
-                    <h5>Barva</h5>
-                    <div class="color-swatches">
-                        <div class="swatch bg-navy"></div>
-                        <div class="swatch bg-black"></div>
-                        <div class="swatch bg-red"></div>
-                        <div class="swatch bg-blue-d active"></div>
-                        <div class="swatch bg-lime"></div>
-                    </div>
+                <div style="margin-bottom: 20px;">
+                    <span style="font-size: 2rem; color: #d93025; font-weight: bold;">@Model.Price Kč</span>
+                    @if (Model.OldPrice != null)
+                    {
+                        <span style="text-decoration: line-through; color: #999; margin-left: 10px;">@Model.OldPrice Kč</span>
+                    }
                 </div>
-                <div class="option-group">
-                    <h5>Velikost</h5>
-                    <div class="size-list">
-                        <span class="size-item">21</span>
-                        <span class="size-item">22</span>
-                        <span class="size-item">23</span>
-                        <span class="size-item active">24</span>
-                        <span class="size-item">25</span>
-                        <span class="size-item">26</span>
-                        <span class="size-item">27</span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="purchase-area">
-                <div class="stock-status">Skladem</div>
-                <div class="price-old-wrapper" style="font-size: 0.9rem; color: #999;">699 Kč</div>
-
-                <div class="price-row">
-                    <div class="price-box">
-                        <span class="new">529 Kč</span>
-                    </div>
-                    <button class="btn-add-cart">
-                        <img src="~/images/materialy/img/kosik.png" style="width: 20px; filter: brightness(0) invert(1);" alt="Cart">
-                        Přidat do košíku
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="info-details">
-    <div class="container info-section-wrapper">
-        <div class="text-col">
-            <h2 class="info-h2">Informace o produktu</h2>
-            <div class="text-content">
-                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
-
-                <p>
-                    <strong>Sed quia consequuntur</strong><br>
-                    magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
+                <p style="line-height: 1.6; color: #555; margin-bottom: 30px;">
+                    @(Model.Description ?? "Popis produktu zatím není k dispozici.")
                 </p>
 
-                <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Vyberte variantu:</label>
+                        <select name="variantId" class="form-control" style="width: 100%; padding: 10px;">
+                            @if (Model.Variants != null && Model.Variants.Any())
+                            {
+                                foreach (var v in Model.Variants)
+                                {
+                                    if (v.StockQuantity > 0)
+                                    {
+                                        <option value="@v.Id">Barva: @v.Color | Velikost: @v.Size (Skladem: @v.StockQuantity)</option>
+                                    }
+                                    else
+                                    {
+                                        <option disabled>Barva: @v.Color | Velikost: @v.Size (Vyprodáno)</option>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>Žádné varianty nejsou dostupné</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" name="quantity" value="1" min="1" max="10" style="width: 70px; text-align: center; padding: 10px;">
+
+                        <button type="submit" class="btn-red" style="flex: 1;"
+                                @(Model.Variants == null || !Model.Variants.Any() ? "disabled" : "")>
+                            Vložit do košíku
+                        </button>
+                    </div>
+
+                    @if (ViewBag.Authenticated != true)
+                    {
+                        <p style="margin-top: 10px; font-size: 0.8rem; color: #d93025;">
+                            * Pro nákup se musíte přihlásit.
+                        </p>
+                    }
+                </form>
             </div>
-        </div>
-        <div class="table-col">
-            <table class="params-table">
-                <thead>
-                    <tr>
-                        <th colspan="2">Parametry produktu</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Barva</td>
-                        <td>Tmavě modrá</td>
-                    </tr>
-                    <tr>
-                        <td>Druh</td>
-                        <td>Do deště, turistické</td>
-                    </tr>
-                    <tr>
-                        <td>Materiál</td>
-                        <td>Guma</td>
-                    </tr>
-                    <tr>
-                        <td>Určení</td>
-                        <td>Chlapecké</td>
-                    </tr>
-                    <tr>
-                        <td>Kód</td>
-                        <td>BG004-001</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </section>
-
-<div class="container">
-    <div class="section-separator">
-        <div class="separator-line"></div>
-        <div class="separator-icon"><img src="~/images/materialy/img/Group 295.png" width="30"></div>
-    </div>
-</div>
 
 <section class="products">
     <div class="container">
-        <div class="center-header">
-            <h2>Mohlo by se <span>Vám líbit</span></h2>
+        <div class="section-separator">
+            <div class="separator-line"></div>
+            <div class="separator-icon"><img src="~/images/materialy/img/heart.png" width="20"></div>
         </div>
+
+        <h2 class="section-title">Mohlo by se vám <span>líbit</span></h2>
 
         <div class="product-grid">
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/papucky-hnede1.png"></div>
-                <h4>Papučky barefoot hnědé kožené</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/papucky-ruzove1.png"></div>
-                <h4>Papučky barefoot růžové</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/sandalky-modre.png"></div>
-                <h4>Sandálky modré umělé</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-img-wrap"><img src="~/images/materialy/img2/boty-se-spickou.png"></div>
-                <h4>Netlačící boty s vysokou špičkou</h4>
-                <div class="card-bottom">
-                    <div><span class="current-price">529 Kč</span> <span class="old-price">699 Kč</span></div>
-                    <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                </div>
-            </div>
+            @if (related != null)
+            {
+                foreach (var item in related)
+                {
+                    <div class="product-card">
+                        <div class="product-img-wrap">
+                            <a asp-action="Detail" asp-route-id="@item.Id">
+                                <img src="@item.MainImageUrl" alt="@item.Name">
+                            </a>
+                        </div>
+                        <h4>
+                            <a asp-action="Detail" asp-route-id="@item.Id" style="color: inherit; text-decoration: none;">
+                                @item.Name
+                            </a>
+                        </h4>
+                        <div class="card-bottom">
+                            <span class="current-price">@item.Price Kč</span>
+                            <a asp-action="Detail" asp-route-id="@item.Id">
+                                <img src="~/images/materialy/img/loupe.png" width="20">
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
         </div>
-    </div>
-</section>
-
-<div class="container">
-    <div class="section-separator">
-        <div class="separator-line"></div>
-        <div class="separator-icon"><img src="~/images/materialy/img/Group 295.png" width="30"></div>
-    </div>
-</div>
-
-<section class="features">
-    <div class="container">
-        <div class="features-grid">
-            <a class="feature-item">
-                <div class="feature-icon-circle">
-                    <img src="~/images/materialy/img/Group 195.png" alt="Skladem">
-                </div>
-                <span>VŠE MÁME SKLADEM</span>
-            </a>
-            <a class="feature-item">
-                <div class="feature-icon-circle">
-                    <img src="~/images/materialy/img/Group 196.png" alt="Doprava">
-                </div>
-                <span>DOPRAVA ZDARMA</span>
-            </a>
-            <a href="#" class="feature-item">
-                <div class="feature-icon-circle">
-                    <img src="~/images/materialy/img/Group 293.png" alt="Měření">
-                </div>
-                <span>JAK MĚŘIT VELIKOSTI</span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<section class="newsletter">
-    <div class="container">
-        <h2>Nezmeškejte nové a výhodné akce</h2>
-        <p>Zadejte svůj e-mail a obratem vám zašleme PDF s inspirací zdarma.</p>
-        <form class="newsletter-form">
-            <input type="email" placeholder="Zadejte svůj email...">
-            <button type="submit" class="btn-red">PŘIHLÁSIT</button>
-        </form>
     </div>
 </section>

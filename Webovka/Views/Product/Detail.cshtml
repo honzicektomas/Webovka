@@ -1,0 +1,115 @@
+﻿@model Webovka.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+    var related = ViewBag.RelatedProducts as List<Webovka.Models.Product>;
+}
+
+<section class="product-detail" style="padding-top: 50px;">
+    <div class="container">
+        <div style="display: flex; gap: 50px; flex-wrap: wrap;">
+
+            <div style="flex: 1; min-width: 300px;">
+                <img src="@Model.MainImageUrl" alt="@Model.Name" style="width: 100%; border-radius: 10px;">
+            </div>
+
+            <div style="flex: 1; min-width: 300px;">
+                <h4 style="color: #999;">@(Model.Category?.Name ?? "Kategorie")</h4>
+                <h1 style="margin: 10px 0;">@Model.Name</h1>
+                <h3 style="color: #d93025; font-size: 2rem; margin-bottom: 20px;">@Model.Price Kč</h3>
+
+                <p style="line-height: 1.6; color: #555; margin-bottom: 30px;">
+                    @(Model.Description ?? "Popis produktu.")
+                </p>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 10px;">Vyberte variantu:</label>
+
+                        <div class="variant-selector-wrapper">
+                            <select name="variantId" class="styled-select" required>
+                                <option value="" disabled selected>-- Zvolte velikost a barvu --</option>
+                                @if (Model.Variants != null && Model.Variants.Any())
+                                {
+                                    foreach (var v in Model.Variants)
+                                    {
+                                        if (v.StockQuantity > 0)
+                                        {
+                                            // Jednoduchý výpis: Barva - Velikost
+                                            <option value="@v.Id">
+                                                @v.Color - Velikost: @v.Size (Skladem)
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option disabled>@v.Color - @v.Size (Vyprodáno)</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 15px;">
+                        <div>
+                            <label style="font-weight: bold; display: block; margin-bottom: 10px;">Ks:</label>
+                            <input type="number" name="quantity" value="1" min="1" max="10" class="input-quantity">
+                        </div>
+
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 10px;">&nbsp;</label> <button type="submit" class="btn-red" style="width: 100%; padding: 15px;">
+                                VLOŽIT DO KOŠÍKU
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div style="margin-top: 30px; font-size: 0.9rem; color: #777;">
+                    <span style="margin-right: 20px;">✔ Skladem</span>
+                    <span>✔ Doprava zdarma</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="products">
+    <div class="container">
+        <div class="section-separator">
+            <div class="separator-line"></div>
+            <div class="separator-icon"><img src="~/images/materialy/img/heart.png" width="20"></div>
+        </div>
+
+        <h2 class="section-title">Mohlo by se vám <span>líbit</span></h2>
+
+        <div class="product-grid">
+            @if (related != null)
+            {
+                foreach (var item in related)
+                {
+                    <div class="product-card">
+                        <div class="product-img-wrap">
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
+                                <img src="@item.MainImageUrl" alt="@item.Name">
+                            </a>
+                        </div>
+                        <h4>
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" style="color: inherit; text-decoration: none;">
+                                @item.Name
+                            </a>
+                        </h4>
+                        <div class="card-bottom">
+                            <span class="current-price">@item.Price Kč</span>
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
+                                <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>

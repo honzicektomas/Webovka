@@ -1,0 +1,42 @@
+﻿@model List<Webovka.Models.Order>
+@{
+    ViewData["Title"] = "Objednávky";
+}
+
+<div class="container" style="padding-top: 50px;">
+    <div class="admin-header">
+        <h1>Přehled Objednávek</h1>
+        <a asp-action="Index" class="btn-red" style="background:#777;">Zpět</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Datum</th>
+                <th>Zákazník</th>
+                <th>Celkem</th>
+                <th>Stav</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td>#@o.Id</td>
+                    <td>@o.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        @o.CustomerName<br>
+                        <span style="font-size:0.8em; color:#777;">@o.CustomerEmail</span>
+                    </td>
+                    <td style="font-weight:bold;">@o.TotalPrice Kč</td>
+                    <td>@o.State</td>
+                    <td class="text-right">
+                        <a asp-action="OrderDetail" asp-route-id="@o.Id" class="btn-red" style="padding: 5px 10px; font-size: 0.8rem;">Detail</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
