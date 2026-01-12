@@ -5,10 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// I když je heslo uvnitø, musíme systému øíct: "Používej MyContext"
 builder.Services.AddDbContext<MyContext>();
 
-// NOVÉ: Pøidání podpory pro Session a HttpContext
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();

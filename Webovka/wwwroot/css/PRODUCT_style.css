@@ -1,4 +1,3 @@
-/* --- GLOBÁLNÍ FIXY --- */
 html, body {
     height: 100%;
     margin: 0;
@@ -19,7 +18,6 @@ main {
     flex-shrink: 0;
 }
 
-/* --- DETAIL PRODUKTU --- */
 .product-detail-section {
     padding: 50px 0;
     background-color: #fff;
@@ -31,7 +29,6 @@ main {
     flex-wrap: wrap;
 }
 
-/* LEVÝ SLOUPEC: GALERIE */
 .detail-gallery {
     flex: 1;
     min-width: 400px;
@@ -77,7 +74,6 @@ main {
         border-color: #333;
     }
 
-/* PRAVÝ SLOUPEC: INFO */
 .detail-info {
     flex: 1;
     min-width: 400px;
@@ -113,7 +109,6 @@ main {
     border-bottom: 1px solid #eee;
 }
 
-/* VÝBÌR VARIANT (Dle reference) */
 .selector-row {
     margin-bottom: 25px;
 }
@@ -133,7 +128,6 @@ main {
     text-transform: none;
 }
 
-/* BARVY - KOLEÈKA */
 .colors-wrap {
     display: flex;
     gap: 10px;
@@ -158,7 +152,6 @@ main {
         transform: scale(1.1);
     }
 
-/* VELIKOSTI - ÈTVEREÈKY */
 .sizes-wrap {
     display: flex;
     gap: 10px;
@@ -197,7 +190,6 @@ main {
         pointer-events: none;
     }
 
-/* KOŠÍK */
 .cart-actions {
     display: flex;
     gap: 15px;
@@ -236,7 +228,6 @@ main {
         cursor: not-allowed;
     }
 
-/* SKLADEM */
 .stock-status {
     margin-top: 15px;
     color: #27ae60;
@@ -244,7 +235,6 @@ main {
     font-size: 0.9rem;
 }
 
-/* --- MOHLO BY SE LÍBIT (GRID 4 vedle sebe) --- */
 .related-section {
     padding: 60px 0;
     background: #fff;
@@ -288,7 +278,7 @@ main {
 
 .related-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 vedle sebe pøesnì dle reference */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 30px;
 }
 

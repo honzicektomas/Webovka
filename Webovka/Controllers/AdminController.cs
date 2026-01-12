@@ -18,14 +18,12 @@ namespace Webovka.Controllers
             return this.HttpContext.Session.GetString("UserRole") == "Admin";
         }
 
-        // 1. DASHBOARD
         public IActionResult Index()
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
             return View();
         }
 
-        // 2. SEZNAM PRODUKTŮ
         public IActionResult Products()
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
@@ -33,7 +31,6 @@ namespace Webovka.Controllers
             return View(products);
         }
 
-        // 3. VYTVOŘENÍ PRODUKTU (GET)
         public IActionResult Create()
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
@@ -41,7 +38,6 @@ namespace Webovka.Controllers
             return View();
         }
 
-        // 3. VYTVOŘENÍ PRODUKTU (POST)
         [HttpPost]
         public IActionResult Create(
             Product product,
@@ -55,7 +51,6 @@ namespace Webovka.Controllers
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
 
-            // Hlavní obrázek
             if (mainImage != null && mainImage.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(mainImage.FileName);
@@ -73,7 +68,6 @@ namespace Webovka.Controllers
                 product.MainImageUrl = "/images/materialy/img/kosik.png";
             }
 
-            // Galerie
             if (otherImages != null && otherImages.Count > 0)
             {
                 product.Images = new List<ProductImage>();
@@ -96,7 +90,6 @@ namespace Webovka.Controllers
             _context.Products.Add(product);
             _context.SaveChanges();
 
-            // První varianta
             if (!string.IsNullOrEmpty(defaultColor) && !string.IsNullOrEmpty(defaultSize))
             {
                 var variant = new ProductVariant
@@ -114,11 +107,6 @@ namespace Webovka.Controllers
             return RedirectToAction("Products");
         }
 
-        // ==========================================
-        // 4. HLAVNÍ EDITACE (VŠE V JEDNOM)
-        // ==========================================
-
-        // Zobrazí editaci: Info + Varianty + Obrázky
         public IActionResult Edit(int id)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
@@ -134,7 +122,7 @@ namespace Webovka.Controllers
             return View(product);
         }
 
-        // Uložení základních údajů (Cena, Název, Hlavní foto)
+         
         [HttpPost]
         public IActionResult EditProductInfo(Product product, IFormFile mainImage)
         {
@@ -162,11 +150,8 @@ namespace Webovka.Controllers
             }
 
             _context.SaveChanges();
-            // Zůstáváme na stránce Edit
             return RedirectToAction("Edit", new { id = product.Id });
         }
-
-        // --- AKCE PRO VARIANTY (V rámci Editace) ---
 
         [HttpPost]
         public IActionResult AddVariant(int productId, string color, string colorHex, string size, int stock)
@@ -215,7 +200,6 @@ namespace Webovka.Controllers
             return RedirectToAction("Products");
         }
 
-        // --- AKCE PRO GALERII (V rámci Editace) ---
 
         [HttpPost]
         public IActionResult UploadGallery(int productId, List<IFormFile> galleryImages)
@@ -262,7 +246,6 @@ namespace Webovka.Controllers
             return RedirectToAction("Products");
         }
 
-        // 5. SMAZÁNÍ PRODUKTU
         public IActionResult Delete(int id)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
@@ -275,7 +258,6 @@ namespace Webovka.Controllers
             return RedirectToAction("Products");
         }
 
-        // KATEGORIE
         public IActionResult Categories()
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
@@ -298,11 +280,9 @@ namespace Webovka.Controllers
             return RedirectToAction("Categories");
         }
 
-        // OBJEDNÁVKY
         public IActionResult Orders()
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
-            // Jen ty odeslané
             var orders = _context.Orders.Where(o => o.State == "Ordered").OrderByDescending(o => o.OrderDate).ToList();
             return View(orders);
         }

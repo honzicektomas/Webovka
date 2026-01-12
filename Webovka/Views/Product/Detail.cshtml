@@ -4,11 +4,9 @@
     ViewData["Title"] = Model.Name;
     var related = ViewBag.RelatedProducts as List<Webovka.Models.Product>;
 
-    // Data pro JS
     var uniqueColors = Model.Variants.GroupBy(v => v.Color).Select(g => g.First()).ToList();
     var uniqueSizes = Model.Variants.Select(v => v.Size).Distinct().OrderBy(s => s.Length).ThenBy(s => s).ToList();
 
-    // Serializace bez async
     var variantsJson = JsonSerializer.Serialize(Model.Variants.Select(v => new
     {
         id = v.Id,
@@ -120,14 +118,12 @@
 </section>
 
 <script>
-    // JS pro galerii
     function switchImg(el) {
         document.getElementById('mainImg').src = el.src;
         document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
     }
 
-    // JS pro varianty (shodný s minulým, jen upravené IDčka)
     const variants = @Html.Raw(variantsJson);
     let curColor = null;
     let curSize = null;
@@ -136,19 +132,16 @@
         curColor = color;
         curSize = null;
 
-        // UI Barvy
         document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
         document.getElementById('lblColor').innerText = color;
 
-        // Reset Velikostí
         document.querySelectorAll('.size-box').forEach(s => {
             s.classList.remove('active');
             s.classList.remove('disabled');
         });
         document.getElementById('lblSize').innerText = "";
 
-        // Zneaktivnit nedostupné velikosti
         document.querySelectorAll('.size-box').forEach(sb => {
             const sVal = sb.getAttribute('data-size');
             const v = variants.find(x => x.color === curColor && x.size === sVal);

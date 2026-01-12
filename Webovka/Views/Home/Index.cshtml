@@ -63,7 +63,6 @@
         <div class="product-grid">
             @if (Model != null && Model.Any())
             {
-                // Zobrazíme napr. len prvých 4-8 produktov, aby Home nebol nekonečný
                 foreach (var bota in Model.Take(8))
                 {
                     <div class="product-card">

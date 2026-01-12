@@ -8,7 +8,7 @@
     <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <div>
             <h1 style="margin: 0;">Seznam Produktů</h1>
-            <p style="color:#777; margin: 5px 0 0 0;">Správa zboží a variant</p>
+            <p style="color:#777; margin: 5px 0 0 0;">Správa zboží, variant a obrázků</p>
         </div>
         <div>
             <a asp-action="Create" class="btn-red" style="margin-right: 10px; text-decoration:none;">+ Nový produkt</a>
@@ -32,14 +32,20 @@
                 <tr>
                     <td>@item.Id</td>
                     <td>
-                        <img src="@item.MainImageUrl" width="40" style="vertical-align:middle; margin-right:10px; border-radius:4px;">
+                        <img src="@item.MainImageUrl" width="40" style="vertical-align:middle; margin-right:10px; border-radius:4px; object-fit:cover;">
                         <strong>@item.Name</strong>
                     </td>
                     <td>@item.Price Kč</td>
-                    <td>@(item.Category?.Name ?? "Nezařazeno")</td>
+                    <td>@(item.Category?.Name)</td>
+
                     <td class="text-right">
-                        <a asp-action="ProductVariants" asp-route-id="@item.Id" class="btn-red" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px; text-decoration:none;">Varianty</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Smazat produkt?')" style="color: #d93025; font-weight: bold; text-decoration: none;">✕ Smazat</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-red" style="padding: 5px 15px; font-size: 0.8rem; margin-right: 5px; text-decoration:none; background-color: #3498db;">
+                            ✎ Upravit
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Opravdu smazat produkt?')" class="btn-red" style="padding: 5px 10px; font-size: 0.8rem; background-color: #d93025; text-decoration: none;">
+                            ✕
+                        </a>
                     </td>
                 </tr>
             }

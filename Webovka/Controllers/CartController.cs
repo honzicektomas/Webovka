@@ -12,10 +12,8 @@ namespace Webovka.Controllers
     {
         private MyContext _context = new MyContext();
 
-        // Pomocná metoda: Získá nebo vytvoří objednávku (Košík)
         private Order GetCurrentOrder()
         {
-            // 1. Zkusíme zjistit ID přihlášeného uživatele (BEZPEČNĚ)
             int? userId = null;
             string userIdStr = HttpContext.Session.GetString("UserId");
             if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out int parsedId))
@@ -23,7 +21,6 @@ namespace Webovka.Controllers
                 userId = parsedId;
             }
 
-            // 2. Zkusíme najít ID objednávky v Session
             int? sessionOrderId = HttpContext.Session.GetInt32("CurrentOrderId");
             Order order = null;
 
@@ -36,7 +33,6 @@ namespace Webovka.Controllers
                     .FirstOrDefault(o => o.Id == sessionOrderId.Value && o.State == "New");
             }
 
-            // 3. Pokud v session není, ale uživatel JE přihlášený, zkusíme najít jeho košík v DB
             if (order == null && userId != null)
             {
                 order = _context.Orders
@@ -44,12 +40,11 @@ namespace Webovka.Controllers
                     .FirstOrDefault(o => o.UserId == userId && o.State == "New");
             }
 
-            // 4. Pokud stále nemáme košík, vytvoříme nový
             if (order == null)
             {
                 order = new Order
                 {
-                    UserId = userId, // Tady už to bude správně (číslo nebo null)
+                    UserId = userId, 
                     OrderDate = DateTime.Now,
                     State = "New",
                     TotalPrice = 0,
@@ -62,29 +57,24 @@ namespace Webovka.Controllers
                 _context.SaveChanges();
             }
 
-            // DŮLEŽITÉ: Uložíme ID objednávky do Session
             HttpContext.Session.SetInt32("CurrentOrderId", order.Id);
 
             return order;
         }
 
-        // ZOBRAZIT KOŠÍK
         public IActionResult Index()
         {
             var order = GetCurrentOrder();
-            // Ošetření pro případ, že se vytvořil nový prázdný košík
             if (order.OrderItems == null) order.OrderItems = new List<OrderItem>();
 
             return View(order.OrderItems.ToList());
         }
 
-        // PŘIDAT DO KOŠÍKU
         [HttpPost]
         public IActionResult AddToCart(int variantId, int quantity)
         {
             var order = GetCurrentOrder();
 
-            // Pokud OrderItems je null (u nového košíku), inicializujeme
             if (order.OrderItems == null) order.OrderItems = new List<OrderItem>();
 
             var existingItem = order.OrderItems.FirstOrDefault(oi => oi.ProductVariantId == variantId);
@@ -114,7 +104,6 @@ namespace Webovka.Controllers
             return RedirectToAction("Index");
         }
 
-        // ODEBRAT Z KOŠÍKU
         public IActionResult Remove(int itemId)
         {
             var order = GetCurrentOrder();

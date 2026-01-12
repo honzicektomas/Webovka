@@ -12,9 +12,9 @@ namespace Webovka.Models
         public Product Product { get; set; }
 
         [Required]
-        public string Color { get; set; } // Název barvy (např. "Červená")
+        public string Color { get; set; } 
 
-        public string ColorHex { get; set; } // NOVÉ: Hex kód (např. "#ff0000")
+        public string ColorHex { get; set; } 
 
         [Required]
         public string Size { get; set; }

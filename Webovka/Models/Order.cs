@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-// using System.ComponentModel.DataAnnotations; <--- Tohle smažte nebo zakomentujte
 
 namespace Webovka.Models
 {
@@ -19,7 +18,6 @@ namespace Webovka.Models
 
         public decimal TotalPrice { get; set; }
 
-        // --- ZDE JSME SMAZALI [Required], ABY MOHL EXISTOVAT KOŠÍK BEZ JMÉNA ---
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerPhone { get; set; }

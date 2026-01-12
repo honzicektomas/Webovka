@@ -25,8 +25,6 @@ namespace Webovka.Controllers
             if (order == null || order.OrderItems == null || !order.OrderItems.Any())
                 return RedirectToAction("Index", "Cart");
 
-            // --- BEZPEČNÉ PŘEDVYPLNĚNÍ DAT ---
-            // Původní kód tady padal na int.Parse, pokud user nebyl přihlášený.
             string userIdStr = HttpContext.Session.GetString("UserId");
             if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out int userId))
             {
@@ -58,7 +56,6 @@ namespace Webovka.Controllers
                 return RedirectToAction("Index", "Cart");
             }
 
-            // Validace vyplnění
             if (string.IsNullOrWhiteSpace(formData.CustomerName) ||
                 string.IsNullOrWhiteSpace(formData.CustomerEmail) ||
                 string.IsNullOrWhiteSpace(formData.CustomerAddress) ||
@@ -74,7 +71,6 @@ namespace Webovka.Controllers
                 return View("Index", dbOrder);
             }
 
-            // Uložení
             dbOrder.CustomerName = formData.CustomerName;
             dbOrder.CustomerEmail = formData.CustomerEmail;
             dbOrder.CustomerPhone = formData.CustomerPhone;
@@ -83,7 +79,6 @@ namespace Webovka.Controllers
             dbOrder.State = "Ordered";
             dbOrder.OrderDate = DateTime.Now;
 
-            // Odečtení skladu
             foreach (var item in dbOrder.OrderItems)
             {
                 if (item.ProductVariant != null)

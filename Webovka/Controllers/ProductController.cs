@@ -29,15 +29,14 @@ namespace Webovka.Controllers
             var product = _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Variants)
-                .Include(p => p.Images) // <--- PŘIDAT INCLUDE PRO OBRÁZKY
+                .Include(p => p.Images)
                 .FirstOrDefault(p => p.Id == id);
 
             if (product == null) return NotFound();
 
-            // --- OPRAVA ZDE: Přidáno .ToList() před OrderBy(Guid) ---
             var randomProducts = _context.Products
                 .Where(p => p.Id != id)
-                .ToList() // <--- TOTO ZDE CHYBĚLO
+                .ToList() 
                 .OrderBy(r => Guid.NewGuid())
                 .Take(4)
                 .ToList();
