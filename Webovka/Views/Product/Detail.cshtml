@@ -1,111 +1,120 @@
 ﻿@model Webovka.Models.Product
+@using System.Text.Json
 @{
     ViewData["Title"] = Model.Name;
     var related = ViewBag.RelatedProducts as List<Webovka.Models.Product>;
+
+    var uniqueColors = Model.Variants
+        .GroupBy(v => v.Color)
+        .Select(g => g.First())
+        .ToList();
+
+    var uniqueSizes = Model.Variants
+        .Select(v => v.Size)
+        .Distinct()
+        .OrderBy(s => s.Length).ThenBy(s => s) 
+        .ToList();
+
+    var variantsJson = JsonSerializer.Serialize(Model.Variants.Select(v => new
+    {
+        id = v.Id,
+        color = v.Color,
+        size = v.Size,
+        stock = v.StockQuantity
+    }));
 }
 
-<section class="product-detail" style="padding-top: 50px;">
-    <div class="container">
-        <div style="display: flex; gap: 50px; flex-wrap: wrap;">
+<section class="product-detail-section">
+    <div class="container detail-container">
 
-            <div style="flex: 1; min-width: 300px;">
-                <img src="@Model.MainImageUrl" alt="@Model.Name" style="width: 100%; border-radius: 10px;">
+        <div class="detail-gallery">
+            <div class="main-image-wrapper">
+                <img src="@Model.MainImageUrl" alt="@Model.Name">
+            </div>
+        </div>
+
+        <div class="detail-info">
+            <span class="info-category">@(Model.Category?.Name ?? "Kategorie")</span>
+            <h1 class="info-title">@Model.Name</h1>
+            <div class="info-price">
+                @Model.Price Kč
+                @if (Model.OldPrice != null)
+                {
+                    <span class="old">@Model.OldPrice Kč</span>
+                }
             </div>
 
-            <div style="flex: 1; min-width: 300px;">
-                <h4 style="color: #999;">@(Model.Category?.Name ?? "Kategorie")</h4>
-                <h1 style="margin: 10px 0;">@Model.Name</h1>
-                <h3 style="color: #d93025; font-size: 2rem; margin-bottom: 20px;">@Model.Price Kč</h3>
+            <div class="info-desc">
+                @(Model.Description ?? "Popis připravujeme.")
+            </div>
 
-                <p style="line-height: 1.6; color: #555; margin-bottom: 30px;">
-                    @(Model.Description ?? "Popis produktu.")
-                </p>
-
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-
-                <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                    <input type="hidden" name="productId" value="@Model.Id" />
-
-                    <div style="margin-bottom: 20px;">
-                        <label style="font-weight: bold; display: block; margin-bottom: 10px;">Vyberte variantu:</label>
-
-                        <div class="variant-selector-wrapper">
-                            <select name="variantId" class="styled-select" required>
-                                <option value="" disabled selected>-- Zvolte velikost a barvu --</option>
-                                @if (Model.Variants != null && Model.Variants.Any())
-                                {
-                                    foreach (var v in Model.Variants)
-                                    {
-                                        if (v.StockQuantity > 0)
-                                        {
-                                            // Jednoduchý výpis: Barva - Velikost
-                                            <option value="@v.Id">
-                                                @v.Color - Velikost: @v.Size (Skladem)
-                                            </option>
-                                        }
-                                        else
-                                        {
-                                            <option disabled>@v.Color - @v.Size (Vyprodáno)</option>
-                                        }
-                                    }
-                                }
-                            </select>
+            <div class="selector-group">
+                <span class="selector-title">Barva: <span id="selectedColorName" class="selection-value"></span></span>
+                <div class="colors-grid">
+                    @foreach (var c in uniqueColors)
+                    {
+                        <div class="color-btn"
+                             style="background-color: @(c.ColorHex ?? "#ccc")"
+                             onclick="selectColor('@c.Color', this)"
+                             title="@c.Color">
                         </div>
-                    </div>
-
-                    <div style="display: flex; gap: 15px;">
-                        <div>
-                            <label style="font-weight: bold; display: block; margin-bottom: 10px;">Ks:</label>
-                            <input type="number" name="quantity" value="1" min="1" max="10" class="input-quantity">
-                        </div>
-
-                        <div style="flex: 1;">
-                            <label style="display: block; margin-bottom: 10px;">&nbsp;</label> <button type="submit" class="btn-red" style="width: 100%; padding: 15px;">
-                                VLOŽIT DO KOŠÍKU
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <div style="margin-top: 30px; font-size: 0.9rem; color: #777;">
-                    <span style="margin-right: 20px;">✔ Skladem</span>
-                    <span>✔ Doprava zdarma</span>
+                    }
                 </div>
+            </div>
+
+            <div class="selector-group">
+                <span class="selector-title">Velikost: <span id="selectedSizeName" class="selection-value"></span></span>
+                <div class="sizes-grid">
+                    @foreach (var s in uniqueSizes)
+                    {
+                        <div class="size-btn"
+                             data-size="@s"
+                             onclick="selectSize('@s', this)">
+                            @s
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" id="cartForm">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="hidden" name="variantId" id="realVariantId" />
+
+                <div class="cart-actions">
+                    <input type="number" name="quantity" value="1" min="1" max="10" class="qty-input">
+                    <button type="submit" id="btnSubmit" class="btn-add" disabled>Vyberte variantu</button>
+                </div>
+            </form>
+
+            <div class="stock-info">
+                <span id="stockMessage"></span>
+            </div>
+
+            <div style="margin-top:20px; font-size:0.9rem; color:#555;">
+                <p>✔ Doprava zdarma nad 2000 Kč</p>
+                <p>✔ Vrácení zboží do 30 dnů</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="products">
+<section class="products" style="background:#f9f9f9; padding:60px 0;">
     <div class="container">
-        <div class="section-separator">
-            <div class="separator-line"></div>
-            <div class="separator-icon"><img src="~/images/materialy/img/heart.png" width="20"></div>
-        </div>
-
         <h2 class="section-title">Mohlo by se vám <span>líbit</span></h2>
-
         <div class="product-grid">
             @if (related != null)
             {
                 foreach (var item in related)
                 {
-                    <div class="product-card">
+                    <div class="product-card" style="background:#fff;">
                         <div class="product-img-wrap">
                             <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
                                 <img src="@item.MainImageUrl" alt="@item.Name">
                             </a>
                         </div>
-                        <h4>
-                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" style="color: inherit; text-decoration: none;">
-                                @item.Name
-                            </a>
-                        </h4>
+                        <h4><a asp-action="Detail" asp-route-id="@item.Id" style="color:inherit; text-decoration:none;">@item.Name</a></h4>
                         <div class="card-bottom">
                             <span class="current-price">@item.Price Kč</span>
-                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
-                                <img src="~/images/materialy/img/kosik.png" class="add-to-cart-icon">
-                            </a>
                         </div>
                     </div>
                 }
@@ -113,3 +122,79 @@
         </div>
     </div>
 </section>
+
+<script>
+    const variants = @Html.Raw(variantsJson);
+
+    let currentColor = null;
+    let currentSize = null;
+
+    function selectColor(color, element) {
+        currentColor = color;
+        currentSize = null; 
+
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('selectedColorName').innerText = color;
+
+        document.querySelectorAll('.size-btn').forEach(b => {
+            b.classList.remove('active');
+            b.classList.remove('disabled'); 
+        });
+        document.getElementById('selectedSizeName').innerText = "";
+
+        document.querySelectorAll('.size-btn').forEach(sizeBtn => {
+            const sizeVal = sizeBtn.getAttribute('data-size');
+
+            const variant = variants.find(v => v.color === currentColor && v.size === sizeVal);
+
+            if (!variant || variant.stock <= 0) {
+                sizeBtn.classList.add('disabled');
+            }
+        });
+
+        updateCartButton();
+    }
+
+    function selectSize(size, element) {
+        if (!currentColor) {
+            alert("Prosím, nejdříve vyberte barvu.");
+            return;
+        }
+
+        currentSize = size;
+
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('selectedSizeName').innerText = size;
+
+        updateCartButton();
+    }
+
+    function updateCartButton() {
+        const btn = document.getElementById('btnSubmit');
+        const hiddenInput = document.getElementById('realVariantId');
+        const stockMsg = document.getElementById('stockMessage');
+
+        if (currentColor && currentSize) {
+            const variant = variants.find(v => v.color === currentColor && v.size === currentSize);
+
+            if (variant && variant.stock > 0) {
+                hiddenInput.value = variant.id;
+                btn.disabled = false;
+                btn.innerText = "VLOŽIT DO KOŠÍKU";
+                btn.style.backgroundColor = "#d93025";
+                stockMsg.innerText = "Skladem: " + variant.stock + " ks";
+            } else {
+                btn.disabled = true;
+                btn.innerText = "Není skladem";
+                stockMsg.innerText = "";
+            }
+        } else {
+            btn.disabled = true;
+            btn.innerText = "Vyberte variantu";
+            btn.style.backgroundColor = "#ccc";
+            stockMsg.innerText = "";
+        }
+    }
+</script>

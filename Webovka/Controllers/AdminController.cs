@@ -87,6 +87,9 @@ namespace Webovka.Controllers
         // ==========================================
         // 3. SPRÁVA VARIANT (Barvy / Velikosti)
         // ==========================================
+        // ==========================================
+        // 3. SPRÁVA VARIANT (Barvy / Velikosti)
+        // ==========================================
         public IActionResult ProductVariants(int id)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
@@ -108,8 +111,8 @@ namespace Webovka.Controllers
             var variant = new ProductVariant
             {
                 ProductId = productId,
-                Color = color,       // Název (např. Červená)
-                ColorHex = colorHex, // Kód (např. #ff0000) - z Color Pickeru
+                Color = color,
+                ColorHex = colorHex, // Uložíme vybranou barvu
                 Size = size,
                 StockQuantity = stock
             };
@@ -118,6 +121,22 @@ namespace Webovka.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("ProductVariants", new { id = productId });
+        }
+
+        // NOVÁ METODA PRO ÚPRAVU SKLADU
+        [HttpPost]
+        public IActionResult UpdateVariantStock(int variantId, int newStock)
+        {
+            if (!isAdmin()) return RedirectToAction("Index", "Home");
+
+            var variant = _context.ProductVariants.Find(variantId);
+            if (variant != null)
+            {
+                variant.StockQuantity = newStock;
+                _context.SaveChanges();
+                return RedirectToAction("ProductVariants", new { id = variant.ProductId });
+            }
+            return RedirectToAction("Products");
         }
 
         public IActionResult DeleteVariant(int id)
@@ -171,14 +190,20 @@ namespace Webovka.Controllers
             }
             return RedirectToAction("Categories");
         }
+        // V AdminController.cs
+
         public IActionResult Orders()
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");
 
-            var orders = _context.Orders.OrderByDescending(o => o.OrderDate).ToList();
+            // ZMĚNA: Přidáno .Where(o => o.State == "Ordered")
+            var orders = _context.Orders
+                .Where(o => o.State == "Ordered")
+                .OrderByDescending(o => o.OrderDate)
+                .ToList();
+
             return View(orders);
         }
-
         public IActionResult OrderDetail(int id)
         {
             if (!isAdmin()) return RedirectToAction("Index", "Home");

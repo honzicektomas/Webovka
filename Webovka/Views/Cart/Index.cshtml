@@ -1,66 +1,62 @@
 ﻿@model List<Webovka.Models.OrderItem>
 @{
-    ViewData["Title"] = "Nákupní košík";
+    ViewData["Title"] = "Košík";
 }
 
-<section class="products">
+<section class="products" style="padding-top: 50px; min-height: 60vh;">
     <div class="container">
-        <h2 class="section-title">Váš nákupní <span>košík</span></h2>
+        <h2 class="section-title">Váš <span>košík</span></h2>
 
-        @if (Model == null || Model.Count == 0)
-        {
-            <div style="text-align: center; padding: 50px;">
-                <p>Váš košík je zatím prázdný.</p>
-                <a asp-controller="Home" asp-action="Index" class="btn-red">Jít nakupovat</a>
-            </div>
-        }
-        else
+        @if (Model != null && Model.Any())
         {
             <table class="cart-table">
                 <thead>
                     <tr>
                         <th>Produkt</th>
-                        <th class="text-center">Množství</th>
-                        <th class="text-right">Cena</th>
+                        <th>Cena</th>
+                        <th>Množství</th>
+                        <th>Celkem</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr class="cart-row">
-                            <td class="cart-cell">
-                                <div class="cart-product-info">
-                                    <img src="@item.ProductVariant.Product.MainImageUrl" class="cart-img" alt="@item.ProductVariant.Product.Name">
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    <img src="@item.ProductVariant?.Product?.MainImageUrl" width="60" style="border-radius:4px;">
                                     <div>
-                                        <strong>@item.ProductVariant.Product.Name</strong>
-                                        <span class="cart-variant-info">
-                                            Velikost: @item.ProductVariant.Size, Barva: @item.ProductVariant.Color
-                                        </span>
+                                        <strong>@(item.ProductVariant?.Product?.Name)</strong><br>
+                                        <small>@item.ProductVariant?.Color, @item.ProductVariant?.Size</small>
                                     </div>
                                 </div>
                             </td>
-                            <td class="cart-cell text-center">
-                                <input type="number" value="@item.Quantity" min="1" class="cart-qty-input">
-                            </td>
-                            <td class="cart-cell text-right">
-                                <span class="cart-price">
-                                    @(item.UnitPrice* item.Quantity) Kč
-                                </span>
-                            </td>
-                            <td class="cart-cell text-center">
-                                <a href="#" class="cart-delete-btn" title="Odstranit">✕</a>
+                            <td>@item.UnitPrice Kč</td>
+                            <td>@item.Quantity ks</td>
+                            <td style="font-weight:bold;">@(item.UnitPrice* item.Quantity) Kč</td>
+                            <td>
+                                <a asp-controller="Cart" asp-action="Remove" asp-route-itemId="@item.Id" style="color:red; font-weight:bold;">✕</a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
 
-            <div class="cart-summary">
-                <p class="cart-total-text">
-                    Celkem: <span class="cart-total-price">@Model.Sum(x => x.UnitPrice * x.Quantity) Kč</span>
-                </p>
-                <button class="btn-red">Pokračovat v objednávce</button>
+            <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Celkem k úhradě: <span style="color:#d93025; font-size:1.5em;">@Model.Sum(x => x.Quantity * x.UnitPrice) Kč</span></h3>
+
+                <a asp-controller="Demand" asp-action="Index" class="btn-red" style="padding: 15px 40px; font-size: 1.1rem; text-decoration:none;">
+                    Přejít k objednávce →
+                </a>
+            </div>
+        }
+        else
+        {
+            <div style="text-align:center; margin-top:50px;">
+                <img src="~/images/materialy/img/kosik.png" width="60" style="opacity:0.3; margin-bottom:20px;">
+                <p>Váš košík je prázdný.</p>
+                <a asp-controller="Product" asp-action="Index" class="btn-red" style="margin-top:20px;">Začít nakupovat</a>
             </div>
         }
     </div>

@@ -1,0 +1,79 @@
+﻿@model Webovka.Models.Order
+@{
+    ViewData["Title"] = "Objednávka";
+}
+
+<section class="products" style="padding-top: 50px;">
+    <div class="container">
+        <h2 class="section-title">Dokončení <span>objednávky</span></h2>
+
+        @if (ViewBag.Error != null)
+        {
+            <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+                @ViewBag.Error
+            </div>
+        }
+
+        <div style="display: flex; gap: 50px; flex-wrap: wrap;">
+
+            <div style="flex: 1; min-width: 350px;">
+                <form asp-action="Complete" method="post" style="background: #f9f9f9; padding: 30px; border-radius: 8px;">
+
+                    <h3 style="margin-bottom: 20px;">Doručovací údaje</h3>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight:bold;">Jméno a příjmení *</label>
+                        <input asp-for="CustomerName" class="form-control" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        <span asp-validation-for="CustomerName" style="color:red; font-size:0.8em;"></span>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight:bold;">Email *</label>
+                        <input asp-for="CustomerEmail" type="email" class="form-control" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        <span asp-validation-for="CustomerEmail" style="color:red; font-size:0.8em;"></span>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight:bold;">Telefon *</label>
+                        <input asp-for="CustomerPhone" class="form-control" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight:bold;">Adresa doručení *</label>
+                        <textarea asp-for="CustomerAddress" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; height: 80px;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-red" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 10px;">
+                        ODESLAT ZÁVAZNĚ
+                    </button>
+                </form>
+            </div>
+
+            <div style="flex: 1; min-width: 350px;">
+                <div style="background: #fff; border: 2px solid #eee; padding: 30px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 20px;">V košíku</h3>
+                    @if (Model.OrderItems != null)
+                    {
+                        <table style="width: 100%; border-collapse: collapse;">
+                            @foreach (var item in Model.OrderItems)
+                            {
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px 0;">
+                                        <strong>@(item.ProductVariant?.Product?.Name ?? "Produkt")</strong><br>
+                                        <small style="color:#777;">@(item.ProductVariant?.Color), @(item.ProductVariant?.Size)</small>
+                                    </td>
+                                    <td style="text-align: right;">@item.Quantity ks</td>
+                                    <td style="text-align: right; font-weight: bold;">@(item.UnitPrice* item.Quantity) Kč</td>
+                                </tr>
+                            }
+                        </table>
+                        <div style="margin-top: 20px; font-size: 1.5rem; font-weight: bold; text-align: right; color: #d93025;">
+                            Celkem: @Model.TotalPrice Kč
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
